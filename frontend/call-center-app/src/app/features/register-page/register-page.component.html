@@ -1,0 +1,165 @@
+<div class="auth-page-container">
+  <div class="auth-card register-card">
+    <!-- Brand Header -->
+    <div class="auth-header">
+      <div class="logo-shield">🌿</div>
+      <h2>Register New Telephony Account</h2>
+      <p class="auth-subtitle">Add Call Center Agent, Supervisor, or Administrator to SQL Server</p>
+    </div>
+
+    <!-- Alerts -->
+    @if (errorMessage()) {
+      <div class="alert alert-danger">
+        <span class="alert-icon">⚠️</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    @if (successMessage()) {
+      <div class="alert alert-success">
+        <span class="alert-icon">✓</span>
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
+
+    <!-- Form -->
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="displayName">Full Display Name</label>
+          <div class="input-wrapper">
+            <span class="input-icon">📇</span>
+            <input 
+              id="displayName"
+              type="text" 
+              [ngModel]="displayName()" 
+              (ngModelChange)="displayName.set($event)"
+              name="displayName" 
+              placeholder="e.g. Mahbub Alam"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="username">Username *</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input 
+              id="username"
+              type="text" 
+              [ngModel]="username()" 
+              (ngModelChange)="username.set($event)"
+              name="username" 
+              placeholder="e.g. mahbub.alam"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <span class="input-icon">✉️</span>
+          <input 
+            id="email"
+            type="email" 
+            [ngModel]="email()" 
+            (ngModelChange)="email.set($event)"
+            name="email" 
+            placeholder="e.g. mahbub@btcl-voice.bd"
+          />
+        </div>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="role">User Role</label>
+          <div class="input-wrapper select-wrapper">
+            <span class="input-icon">🛡️</span>
+            <select 
+              id="role"
+              [ngModel]="role()" 
+              (ngModelChange)="role.set($event)"
+              name="role"
+              class="auth-select"
+            >
+              <option value="Agent">Agent (Softphone &amp; CRM)</option>
+              <option value="Supervisor">Supervisor (Coaching &amp; Spying)</option>
+              <option value="Admin">Administrator (Campaigns &amp; Queues)</option>
+            </select>
+          </div>
+        </div>
+
+        @if (role() === 'Agent') {
+          <div class="form-group">
+            <label for="extension">SIP Extension (Optional)</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📞</span>
+              <input 
+                id="extension"
+                type="text" 
+                [ngModel]="extension()" 
+                (ngModelChange)="extension.set($event)"
+                name="extension" 
+                placeholder="e.g. 1007 (Auto if empty)"
+              />
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input 
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'" 
+              [ngModel]="password()" 
+              (ngModelChange)="password.set($event)"
+              name="password" 
+              placeholder="Minimum 6 characters"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password *</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔑</span>
+            <input 
+              id="confirmPassword"
+              [type]="showPassword() ? 'text' : 'password'" 
+              [ngModel]="confirmPassword()" 
+              (ngModelChange)="confirmPassword.set($event)"
+              name="confirmPassword" 
+              placeholder="Repeat password"
+              required
+            />
+            <button type="button" class="btn-toggle-pwd" (click)="toggleShowPassword()">
+              {{ showPassword() ? '👁️' : '🙈' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          <span>Registering Account in SQL Server...</span>
+        } @else {
+          <span>✨ Create Account &amp; Sign In</span>
+        }
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div class="auth-footer">
+      <span>Already have an account?</span>
+      <a routerLink="/login" class="register-link">Sign in to Existing Account →</a>
+    </div>
+  </div>
+</div>

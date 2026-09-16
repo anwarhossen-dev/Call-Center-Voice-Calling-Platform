@@ -1,0 +1,15 @@
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\bin\Debug\net8.0\CallCenter.Application.deps.json
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\bin\Debug\net8.0\CallCenter.Application.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\bin\Debug\net8.0\CallCenter.Application.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\bin\Debug\net8.0\CallCenter.Domain.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\bin\Debug\net8.0\CallCenter.Domain.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.csproj.AssemblyReference.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.AssemblyInfoInputs.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.AssemblyInfo.cs
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.csproj.CoreCompileInputs.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCent.5E9B4410.Up2Date
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\refint\CallCenter.Application.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\ref\CallCenter.Application.dll

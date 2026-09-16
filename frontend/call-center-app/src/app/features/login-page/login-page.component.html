@@ -1,0 +1,108 @@
+<div class="auth-page-container">
+  <div class="auth-card">
+    <!-- Brand Header -->
+    <div class="auth-header">
+      <div class="logo-shield">🌿</div>
+      <h2>BTCL VoiceEngine Core</h2>
+      <p class="auth-subtitle">Contact Center Agent &amp; Operations Portal</p>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (errorMessage()) {
+      <div class="alert alert-danger">
+        <span class="alert-icon">⚠️</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    @if (successMessage()) {
+      <div class="alert alert-success">
+        <span class="alert-icon">✓</span>
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
+
+    <!-- Login Form -->
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label for="usernameOrEmail">Username or Email</label>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input 
+            id="usernameOrEmail"
+            type="text" 
+            [ngModel]="usernameOrEmail()" 
+            (ngModelChange)="usernameOrEmail.set($event)"
+            name="usernameOrEmail" 
+            placeholder="e.g. rahim.ahmed or admin"
+            required
+            autocomplete="username"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input 
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'" 
+            [ngModel]="password()" 
+            (ngModelChange)="password.set($event)"
+            name="password" 
+            placeholder="Enter your account password"
+            required
+            autocomplete="current-password"
+          />
+          <button type="button" class="btn-toggle-pwd" (click)="toggleShowPassword()">
+            {{ showPassword() ? '👁️' : '🙈' }}
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          <span>Signing in...</span>
+        } @else {
+          <span>🔐 Sign In to Telephony Portal</span>
+        }
+      </button>
+    </form>
+
+    <!-- 1-Click Quick Demo Login Section -->
+    <div class="demo-section">
+      <div class="demo-divider">
+        <span>Instant 1-Click Demo Login</span>
+      </div>
+      <div class="demo-buttons-grid">
+        <button type="button" class="btn-demo admin" (click)="fillDemo('admin', 'Admin@123456')">
+          <span class="demo-role">🔑 Admin</span>
+          <span class="demo-user">admin</span>
+        </button>
+
+        <button type="button" class="btn-demo supervisor" (click)="fillDemo('supervisor', 'Admin@123456')">
+          <span class="demo-role">👔 Supervisor</span>
+          <span class="demo-user">supervisor</span>
+        </button>
+
+        <button type="button" class="btn-demo agent" (click)="fillDemo('rahim.ahmed', 'Agent@123456')">
+          <span class="demo-role">🎧 Agent Rahim</span>
+          <span class="demo-user">Ext: 1001</span>
+        </button>
+
+        <button type="button" class="btn-demo agent" (click)="fillDemo('fatima.khan', 'Agent@123456')">
+          <span class="demo-role">🎧 Agent Fatima</span>
+          <span class="demo-user">Ext: 1002</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer Register Link -->
+    <div class="auth-footer">
+      <span>New agent or supervisor?</span>
+      <a routerLink="/register" class="register-link">Register New User / Agent →</a>
+    </div>
+  </div>
+</div>

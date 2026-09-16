@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "VrpfjvRopbU=",
+  "success": true,
+  "projectFilePath": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Infrastructure\\CallCenter.Infrastructure\\CallCenter.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\8.0.0\\microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.extensions.caching.memory\\8.0.1\\microsoft.extensions.caching.memory.8.0.1.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.2\\microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.extensions.options\\8.0.2\\microsoft.extensions.options.8.0.2.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

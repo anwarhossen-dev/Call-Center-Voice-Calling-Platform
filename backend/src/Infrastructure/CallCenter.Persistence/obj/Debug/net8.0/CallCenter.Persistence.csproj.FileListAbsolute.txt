@@ -1,0 +1,17 @@
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\bin\Debug\net8.0\CallCenter.Persistence.deps.json
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\bin\Debug\net8.0\CallCenter.Persistence.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\bin\Debug\net8.0\CallCenter.Persistence.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\bin\Debug\net8.0\CallCenter.Application.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\bin\Debug\net8.0\CallCenter.Domain.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\bin\Debug\net8.0\CallCenter.Domain.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\bin\Debug\net8.0\CallCenter.Application.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.csproj.AssemblyReference.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.GeneratedMSBuildEditorConfig.editorconfig
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.AssemblyInfoInputs.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.AssemblyInfo.cs
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.csproj.CoreCompileInputs.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCent.2B3341C2.Up2Date
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\refint\CallCenter.Persistence.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\ref\CallCenter.Persistence.dll

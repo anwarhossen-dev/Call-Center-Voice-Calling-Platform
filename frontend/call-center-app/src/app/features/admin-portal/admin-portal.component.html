@@ -1,0 +1,408 @@
+<div class="admin-container">
+  <!-- Admin Sidebar Submenu (All Functional) -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-title">Administration</div>
+    <button
+      type="button"
+      class="nav-item"
+      [class.active]="activeSubSection === 'campaigns'"
+      (click)="activeSubSection = 'campaigns'"
+    >
+      <span class="icon">🎯</span> Campaigns ({{ telephony.campaigns().length }})
+    </button>
+    <button
+      type="button"
+      class="nav-item"
+      [class.active]="activeSubSection === 'agents'"
+      (click)="activeSubSection = 'agents'"
+    >
+      <span class="icon">👥</span> Users &amp; SIP Extensions
+    </button>
+    <button
+      type="button"
+      class="nav-item"
+      [class.active]="activeSubSection === 'queues'"
+      (click)="activeSubSection = 'queues'"
+    >
+      <span class="icon">🔀</span> ACD Queues &amp; Routing
+    </button>
+    <button
+      type="button"
+      class="nav-item"
+      [class.active]="activeSubSection === 'recordings'"
+      (click)="activeSubSection = 'recordings'"
+    >
+      <span class="icon">🎙</span> Audio Recordings
+    </button>
+    <button
+      type="button"
+      class="nav-item"
+      [class.active]="activeSubSection === 'settings'"
+      (click)="activeSubSection = 'settings'"
+    >
+      <span class="icon">⚙</span> BTCL Trunk &amp; SIP Settings
+    </button>
+  </aside>
+
+  <!-- Admin Main Content Area -->
+  <main class="admin-content">
+    <!-- SUB-SECTION 1: CAMPAIGNS -->
+    @if (activeSubSection === 'campaigns') {
+      <div>
+        <div class="content-header">
+          <div>
+            <h2 class="section-title">Calling Campaigns Management</h2>
+            <div class="section-sub">Configure inbound queues, outbound predictive campaigns, and agent allocations.</div>
+          </div>
+          <button type="button" class="btn-new-campaign" (click)="openNewCampaignModal()">
+            + New Campaign 
+          </button>
+        </div>
+
+        <div class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Campaign Name</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Agents Assigned</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (camp of telephony.campaigns(); track camp.name) {
+                <tr>
+                  <td class="font-bold text-dark">{{ camp.name }}</td>
+                  <td>
+                    <span class="type-pill" [class.inbound]="camp.type === 'Inbound'">
+                      {{ camp.type }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="status-pill" [ngClass]="camp.status">
+                      <span class="sdot"></span> {{ camp.status }}
+                    </span>
+                  </td>
+                  <td class="font-bold">{{ camp.agents }} Agents</td>
+                  <td>
+                    <div class="action-buttons">
+                      <button
+                        type="button"
+                        class="action-btn"
+                        (click)="telephony.toggleCampaign(camp.name)"
+                        [title]="camp.status === 'Active' ? 'Pause Campaign' : 'Resume Campaign'"
+                      >
+                        {{ camp.status === 'Active' ? '⏸ Pause' : '▶ Resume' }}
+                      </button>
+                      <button
+                        type="button"
+                        class="action-btn text-red"
+                        (click)="telephony.deleteCampaign(camp.name)"
+                        title="Delete Campaign"
+                      >
+                        🗑 Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- SUB-SECTION 2: USERS & SIP EXTENSIONS -->
+    @else if (activeSubSection === 'agents') {
+      <div>
+        <div class="content-header">
+          <div>
+            <h2 class="section-title">SIP Agent Extensions Directory</h2>
+            <div class="section-sub">Manage WebRTC softphone registrations, credentials, and queue assignments.</div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Extension</th>
+                <th>Agent Name</th>
+                <th>SIP Domain</th>
+                <th>Role</th>
+                <th>Current Status</th>
+                <th>Audio Codec</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (a of telephony.agentsList(); track a.extension) {
+                <tr>
+                  <td class="font-mono font-bold text-blue">{{ a.extension }}</td>
+                  <td class="font-bold text-dark">{{ a.name }}</td>
+                  <td class="font-mono text-muted">telephony.local</td>
+                  <td>{{ a.role }}</td>
+                  <td>
+                    <span class="status-pill" [ngClass]="a.state">
+                      <span class="sdot"></span> {{ a.state }}
+                    </span>
+                  </td>
+                  <td class="font-mono text-muted">Opus 48kHz</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- SUB-SECTION 3: ACD QUEUES & ROUTING -->
+    @else if (activeSubSection === 'queues') {
+      <div>
+        <div class="content-header">
+          <div>
+            <h2 class="section-title">ACD Inbound Queues &amp; Routing Rules</h2>
+            <div class="section-sub">Define call distribution algorithms, wait timeouts, and music-on-hold playlists.</div>
+          </div>
+        </div>
+
+        <div class="grid-cards-row">
+          <div class="info-metric-card">
+            <h4>Sales Inbound Queue</h4>
+            <p>Strategy: <strong>Longest Idle Agent</strong></p>
+            <p>Music on Hold: <strong>Corporate Instrumental</strong></p>
+            <p>Wrap-up Timeout: <strong>45 Seconds</strong></p>
+            <span class="badge-tag">Max Priority</span>
+          </div>
+
+          <div class="info-metric-card">
+            <h4>Technical Support Queue</h4>
+            <p>Strategy: <strong>Skills Based Routing (Tier 1/2)</strong></p>
+            <p>Music on Hold: <strong>BTCL Official Tone</strong></p>
+            <p>Wrap-up Timeout: <strong>60 Seconds</strong></p>
+            <span class="badge-tag">Standard</span>
+          </div>
+
+          <div class="info-metric-card">
+            <h4>Billing &amp; Payments Queue</h4>
+            <p>Strategy: <strong>Round Robin</strong></p>
+            <p>Music on Hold: <strong>Telecom Ambient</strong></p>
+            <p>Wrap-up Timeout: <strong>30 Seconds</strong></p>
+            <span class="badge-tag">Standard</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- SUB-SECTION 4: AUDIO RECORDINGS -->
+    @else if (activeSubSection === 'recordings') {
+      <div>
+        <div class="content-header">
+          <div>
+            <h2 class="section-title">Voice Call Recordings</h2>
+            <div class="section-sub">Actual audio of speech via microphone and live voice recordings from call centers.</div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Call UUID</th>
+                <th>Customer & Mobile Number</th>
+                <th>Duration</th>
+                <th>Recording Time</th>
+                <th>Playback & Download</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (rec of audioRecorder.recordedCalls(); track rec.id) {
+                <tr>
+                  <td class="font-mono font-bold">{{ rec.callUuid }}</td>
+                  <td>
+                    <div class="font-bold text-dark">{{ rec.customerName }}</div>
+                    <div class="font-mono text-muted text-xs">{{ rec.phoneNumber }}</div>
+                  </td>
+                  <td>{{ formatDuration(rec.durationSeconds) }}</td>
+                  <td class="text-muted">{{ rec.timestamp }}</td>
+                  <td>
+                    <div class="audio-player-mock">
+                      <button
+                        class="btn-play-mini"
+                        [class.btn-active-orange]="audioRecorder.activePlayingId() === rec.id"
+                        (click)="audioRecorder.playRecording(rec)"
+                      >
+                        {{ audioRecorder.activePlayingId() === rec.id ? '⏸ Pause' : '▶ Play Voice' }}
+                      </button>
+                      @if (rec.audioUrl) {
+                        <a [href]="rec.audioUrl" [download]="'rec-' + rec.callUuid + '.webm'" class="btn-dl-mini" title="Download recording">
+                          ⬇ Download
+                        </a>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- SUB-SECTION 5: SYSTEM SETTINGS -->
+    @else if (activeSubSection === 'settings') {
+      <div class="settings-page-container">
+        <!-- Card 1: Twilio Live Calling Integration -->
+        <div class="settings-card-special">
+          <div class="sc-header">
+            <div class="sc-title">
+              <span class="sc-icon">📱</span>
+              <div>
+                <h3 class="sc-h3">Real Mobile Calling Setup (Twilio SIP / REST API)</h3>
+                <div class="sc-desc">If you enter your Twilio credentials here, calls from the dialpad will ring your original mobile number directly.</div>
+              </div>
+            </div>
+            <label class="switch-container">
+              <input type="checkbox" [(ngModel)]="twilioEnabled" />
+              <span class="switch-slider"></span>
+              <span class="switch-label">{{ twilioEnabled ? 'Active  : 'Disabled' }}</span>
+            </label>
+          </div>
+
+          <div class="settings-form-grid">
+            <div class="setting-row">
+              <label class="setting-label">Twilio Account SID</label>
+              <input
+                type="text"
+                class="setting-input font-mono"
+                [(ngModel)]="twilioAccountSid"
+                placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              />
+            </div>
+            <div class="setting-row">
+              <label class="setting-label">Twilio Auth Token</label>
+              <input
+                type="password"
+                class="setting-input font-mono"
+                [(ngModel)]="twilioAuthToken"
+                placeholder="Twilio Auth Token (Keep it secret!)"
+              />
+            </div>
+            <div class="setting-row">
+              <label class="setting-label">Twilio Caller ID (From Phone Number)</label>
+              <input
+                type="text"
+                class="setting-input font-mono"
+                [(ngModel)]="twilioFromNumber"
+                placeholder="+12055550199 (Twilio Phone Number in E.164 Format)"
+              />
+            </div>
+            <div class="setting-row flex-end-row">
+              <button class="btn-save-twilio" (click)="saveTwilioConfig()">
+                💾 Save Twilio Settings (Save)
+              </button>
+            </div>
+          </div>
+
+          @if (twilioSaveStatus) {
+            <div class="twilio-status-alert">{{ twilioSaveStatus }}</div>
+          }
+        </div>
+
+        <!-- Card 2: BTCL SIP Trunk & FreeSWITCH Configuration -->
+        <div class="settings-card-standard">
+          <div class="content-header">
+            <div>
+              <h3 class="section-title">BTCL SIP Trunk &amp; FreeSWITCH PBX Gateway</h3>
+              <div class="section-sub">Core telephony network gateway parameters (Local PBX / E1 ISDN PRI).</div>
+            </div>
+          </div>
+
+          <div class="settings-form-grid">
+            <div class="setting-row">
+              <label class="setting-label">BTCL SIP Gateway Name</label>
+              <input type="text" class="setting-input font-mono" value="btcl_trunk_primary" readonly />
+            </div>
+            <div class="setting-row">
+              <label class="setting-label">SIP Domain / Proxy</label>
+              <input type="text" class="setting-input font-mono" value="sip.btcl.com.bd:5060" readonly />
+            </div>
+            <div class="setting-row">
+              <label class="setting-label">FreeSWITCH ESL Socket</label>
+              <input type="text" class="setting-input font-mono" value="127.0.0.1:8021 (ClueCon)" readonly />
+            </div>
+            <div class="setting-row">
+              <label class="setting-label">Preferred Codec Priority</label>
+              <input type="text" class="setting-input font-mono" value="OPUS, PCMU, PCMA, G722" readonly />
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </main>
+</div>
+
+<!-- ================= MODAL: CREATE NEW CAMPAIGN ================= -->
+@if (showNewCampaignModal) {
+  <div class="modal-backdrop" (click)="showNewCampaignModal = false">
+    <div class="new-campaign-modal-card" (click)="$event.stopPropagation()">
+      <div class="nc-header">
+        <div class="nc-title">
+          <span>🎯</span>
+          <span>Create New Calling Campaign</span>
+        </div>
+        <button class="btn-close" (click)="showNewCampaignModal = false">✕</button>
+      </div>
+
+      <div class="nc-body">
+        <label class="setting-label">Campaign Name</label>
+        <input
+          type="text"
+          class="setting-input"
+          [(ngModel)]="newCampName"
+          placeholder="e.g. Dhaka Broadband Promotion 2026"
+        />
+
+        <label class="setting-label mt-3">Campaign Type</label>
+        <div class="type-radio-group">
+          <button
+            type="button"
+            class="type-btn"
+            [class.active]="newCampType === 'Outbound'"
+            (click)="newCampType = 'Outbound'"
+          >
+            Outbound Predictive / Progressive
+          </button>
+          <button
+            type="button"
+            class="type-btn"
+            [class.active]="newCampType === 'Inbound'"
+            (click)="newCampType = 'Inbound'"
+          >
+            Inbound ACD Queue Routing
+          </button>
+        </div>
+
+        <label class="setting-label mt-3">Number of Assigned Agents</label>
+        <input
+          type="number"
+          class="setting-input"
+          [(ngModel)]="newCampAgents"
+          min="1"
+          max="50"
+        />
+      </div>
+
+      <div class="nc-footer">
+        <button class="btn-cancel" (click)="showNewCampaignModal = false">Cancel</button>
+        <button
+          class="btn-submit"
+          [disabled]="!newCampName.trim()"
+          (click)="submitNewCampaign()"
+        >
+          Create Campaign (Create)
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,11 @@
+d:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\bin\Debug\net8.0\CallCenter.Domain.deps.json
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\bin\Debug\net8.0\CallCenter.Domain.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\bin\Debug\net8.0\CallCenter.Domain.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\CallCenter.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\CallCenter.Domain.AssemblyInfoInputs.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\CallCenter.Domain.AssemblyInfo.cs
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\CallCenter.Domain.csproj.CoreCompileInputs.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\CallCenter.Domain.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\refint\CallCenter.Domain.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\CallCenter.Domain.pdb
+d:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\ref\CallCenter.Domain.dll

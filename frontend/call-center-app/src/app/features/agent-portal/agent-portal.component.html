@@ -1,0 +1,584 @@
+<div class="agent-container">
+  <!-- ================= LEFT SOFTPHONE TERMINAL ================= -->
+  <div class="softphone-terminal">
+    <!-- Terminal Header -->
+    <div class="terminal-header">
+      <div class="terminal-badge" [ngClass]="telephony.callStatus()">
+        <span class="live-dot"></span>
+        @switch (telephony.callStatus()) {
+          @case ('Idle') { Ready to Dial }
+          @case ('Ringing') { Calling...  }
+          @case ('Connected') { Active Call }
+          @case ('OnHold') { On Hold  }
+          @case ('WrapUp') { Wrap-Up (ACW) }
+        }
+      </div>
+      <div class="trunk-pill">
+        <span class="trunk-dot"></span>
+        <span>BTCL SIP Trunk : Line 01</span>
+      </div>
+    </div>
+
+    @if (telephony.saveNotification()) {
+      <div class="db-save-toast">
+        <span class="db-icon">💾</span>
+        <span>{{ telephony.saveNotification() }}</span>
+      </div>
+    }
+
+    <!-- ================= STATE 1: IDLE / DIALER ================= -->
+    @if (telephony.callStatus() === 'Idle') {
+      <div class="dialer-screen">
+        <!-- Digital Phone Number Input Display -->
+        <div class="oled-input-display">
+          <input
+            type="tel"
+            class="oled-input"
+            [(ngModel)]="dialInput"
+            placeholder="Enter phone number..."
+            (keydown.enter)="dialCurrentNumber()"
+            (input)="onInputChange()"
+            autofocus
+          />
+          <div class="oled-actions">
+            @if (dialInput) {
+              <button class="oled-btn" (click)="backspace()" title="Backspace">⌫</button>
+              <button class="oled-btn clear" (click)="clearInput()" title="Clear">✕</button>
+            }
+          </div>
+        </div>
+
+        <!-- DTMF Dialpad 3x4 Grid -->
+        <div class="keypad-matrix">
+          @for (key of keypadKeys; track key.digit) {
+            <button
+              type="button"
+              class="key-tile"
+              (click)="pressKey(key.digit)"
+              [title]="key.sub"
+            >
+              <span class="key-val">{{ key.digit }}</span>
+              <span class="key-letters">{{ key.sub }}</span>
+            </button>
+          }
+        </div>
+
+        <!-- Big Green Dial Button -->
+        <div class="action-btn-row">
+          <button
+            type="button"
+            class="btn-originate-call"
+            [disabled]="!dialInput.trim()"
+            (click)="dialCurrentNumber()"
+            title="Dial Phone Number"
+          >
+            <span class="phone-icon">📞</span>
+            <span class="btn-text"> Call Now</span>
+          </button>
+        </div>
+
+        <!-- Speed Dial Contacts -->
+        <div class="speed-dial-panel">
+          <div class="speed-dial-header">
+            <span>Quick Contacts (Fast Dial)</span>
+            <span class="contact-count">{{ telephony.quickContacts().length }}</span>
+          </div>
+          <div class="speed-dial-grid">
+            @for (c of telephony.quickContacts(); track c.phone) {
+              <div class="speed-chip" (click)="selectQuickContact(c)" title="Click to dial immediately">
+                <div class="chip-avatar">{{ c.name[0] }}</div>
+                <div class="chip-info">
+                  <span class="chip-name">{{ c.name }}</span>
+                  <span class="chip-phone">{{ c.phone }}</span>
+                </div>
+                <span class="chip-call-btn">📞</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ================= STATE 2: RINGING ================= -->
+    @else if (telephony.callStatus() === 'Ringing') {
+      <div class="ringing-screen">
+        <div class="radar-caller-box">
+          <div class="radar-circle-pulse"></div>
+          <div class="radar-avatar">📞</div>
+        </div>
+
+        <div class="ringing-status-label">Outbound Dialing (Calling)...</div>
+        <div class="ringing-number">{{ telephony.activeCallerNumber() }}</div>
+        <div class="ringing-gateway-badge">BTCL SIP Gateway • Routing Audio Leg</div>
+
+        <div class="sound-wave-anim">
+          <span class="sbar"></span><span class="sbar"></span><span class="sbar"></span>
+          <span class="sbar"></span><span class="sbar"></span><span class="sbar"></span>
+        </div>
+
+        <div class="ringing-action-group">
+          <button class="btn-connect-now" (click)="telephony.answerCall()" title="Answer right now for testing">
+            <span>✓</span> Connect Now
+          </button>
+
+          <button class="btn-cancel-call" (click)="telephony.hangupCall()" title="Cancel Outbound Call">
+            <span>✕</span> Cancel Call 
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- ================= STATE 3: CONNECTED / ON HOLD ================= -->
+    @else if (telephony.callStatus() === 'Connected' || telephony.callStatus() === 'OnHold') {
+      <div class="active-call-screen">
+        <!-- Active Caller Card -->
+        <div class="active-caller-card" [class.holding]="telephony.isOnHold()">
+          <div class="caller-avatar-circle">
+            <span>{{ telephony.isOnHold() ? '⏸' : '👤' }}</span>
+          </div>
+          <div class="caller-primary-info">
+            <div class="caller-phone-large">{{ telephony.activeCallerNumber() }}</div>
+            <div class="caller-client-name">{{ telephony.currentCustomer().name }}</div>
+          </div>
+          <div class="rec-indicator" [class.paused]="!telephony.isRecording()" (click)="telephony.toggleRecording()" title="Toggle Recording">
+            <span class="rec-dot"></span>
+            <span>{{ telephony.isRecording() ? 'REC' : 'PAUSED' }}</span>
+          </div>
+        </div>
+
+        <!-- Call Timer & Audio Wave -->
+        <div class="call-metrics-bar">
+          <div class="timer-display">{{ formatDuration(telephony.activeCallDuration()) }}</div>
+          @if (!telephony.isOnHold()) {
+            <div class="live-voice-wave">
+              <span class="wave-col"></span><span class="wave-col"></span>
+              <span class="wave-col"></span><span class="wave-col"></span>
+              <span class="wave-col"></span><span class="wave-col"></span>
+              <span class="wave-col"></span>
+            </div>
+          } @else {
+            <div class="hold-notice-pill">
+              <span>🎵</span>
+              <span>On Hold : Synthesized Music Playing</span>
+            </div>
+          }
+        </div>
+
+        <!-- Mid-Call Control Grid (All Functional) -->
+        <div class="control-actions-grid">
+          <button
+            type="button"
+            class="telephony-btn"
+            [class.active]="telephony.isOnHold()"
+            (click)="telephony.toggleHold()"
+            title="Hold or Resume Call"
+          >
+            <span class="tele-icon">{{ telephony.isOnHold() ? '▶' : '⏸' }}</span>
+            <span class="tele-label">{{ telephony.isOnHold() ? 'Resume' : 'Hold' }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="telephony-btn"
+            [class.active]="telephony.isMuted()"
+            (click)="telephony.toggleMute()"
+            title="Mute or Unmute Microphone"
+          >
+            <span class="tele-icon">{{ telephony.isMuted() ? '🔇' : '🎙' }}</span>
+            <span class="tele-label">{{ telephony.isMuted() ? 'Muted' : 'Mute' }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="telephony-btn"
+            [class.active]="showInCallKeypad"
+            (click)="showInCallKeypad = !showInCallKeypad"
+            title="In-call DTMF Keypad for IVR menus"
+          >
+            <span class="tele-icon">🔢</span>
+            <span class="tele-label">Keypad</span>
+          </button>
+
+          <button
+            type="button"
+            class="telephony-btn"
+            (click)="openTransferModal()"
+            title="Transfer Call to Another Agent"
+          >
+            <span class="tele-icon">↗</span>
+            <span class="tele-label">Transfer</span>
+          </button>
+        </div>
+
+        <!-- In-Call DTMF Drawer -->
+        @if (showInCallKeypad) {
+          <div class="in-call-dtmf-drawer">
+            <div class="dtmf-drawer-header">
+              <span>DTMF Keypad (IVR Menu Navigation)</span>
+              <button class="btn-mini-close" (click)="showInCallKeypad = false">✕</button>
+            </div>
+            <div class="dtmf-digits-grid">
+              @for (key of keypadKeys; track key.digit) {
+                <button type="button" class="dtmf-digit-btn" (click)="sendInCallDtmf(key.digit)">
+                  {{ key.digit }}
+                </button>
+              }
+            </div>
+            @if (lastDtmfKey) {
+              <div class="dtmf-tone-toast">Sent tone: {{ lastDtmfKey }} (RFC 2833 / SIP INFO)</div>
+            }
+          </div>
+        }
+
+        <!-- Big Red Hangup Button -->
+        <div class="hangup-action-zone">
+          <button
+            type="button"
+            class="btn-hangup-call"
+            (click)="telephony.hangupCall()"
+            title="End Call Now"
+          >
+            <span class="hangup-icon">☎</span>
+            <span class="hangup-text"> (End Call)</span>
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- ================= STATE 4: WRAP-UP (ACW) ================= -->
+    @else if (telephony.callStatus() === 'WrapUp') {
+      <div class="wrapup-screen">
+        <div class="wrapup-banner">
+          <span class="wrapup-badge-icon">✅</span>
+          <div class="wrapup-meta">
+            <h3 class="wrapup-title">Call Finished</h3>
+            <div class="wrapup-stat">
+              <span>Number: <strong>{{ telephony.activeCallerNumber() || 'Direct Outbound' }}</strong></span>
+              <span>•</span>
+              <span>Duration: <strong>{{ formatDuration(telephony.activeCallDuration()) }}</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real Voice Recording Playback Card -->
+        @if (audioRecorder.latestRecording(); as rec) {
+          <div class="wrapup-recording-card">
+            <div class="rec-card-header">
+              <div class="rec-title">
+                <span class="rec-dot-live"></span>
+                <span>🎙️ Audio Recording (Call Recording)</span>
+              </div>
+              <span class="rec-duration-badge">{{ formatDuration(rec.durationSeconds) }}</span>
+            </div>
+            <div class="rec-controls-row">
+              <button
+                type="button"
+                class="btn-play-rec"
+                [class.playing]="audioRecorder.activePlayingId() === rec.id"
+                (click)="audioRecorder.playRecording(rec)"
+              >
+                <span>{{ audioRecorder.activePlayingId() === rec.id ? '⏸ Pause' : '▶ Play Recording (Listen to Recording)' }}</span>
+              </button>
+
+              @if (rec.audioUrl) {
+                <a [href]="rec.audioUrl" [download]="'call-recording-' + rec.callUuid + '.webm'" class="btn-download-rec" title="Download audio">
+                  ⬇ Download (.webm)
+                </a>
+              }
+            </div>
+            <div class="rec-hint">The real-time audio recording has been saved. You can listen to it or download it now.</div>
+          </div>
+        }
+
+        <!-- Disposition Form inside Softphone -->
+        <div class="wrapup-form-body">
+          <label class="section-label">Call Outcome / Disposition (Mandatory)</label>
+          <div class="disposition-pills">
+            @for (d of dispositionOptions; track d.val) {
+              <button
+                type="button"
+                class="disp-pill"
+                [class.selected]="selectedDisposition === d.val"
+                (click)="selectedDisposition = d.val"
+              >
+                {{ d.label }}
+              </button>
+            }
+          </div>
+
+          <label class="section-label mt-3">Quick Note Snippets</label>
+          <div class="snippets-row">
+            <button type="button" class="snippet-btn" (click)="addSnippet('Customer verified account.')">+ Account verified</button>
+            <button type="button" class="snippet-btn" (click)="addSnippet('Billing clarification given.')">+ Billing clarified</button>
+            <button type="button" class="snippet-btn" (click)="addSnippet('Scheduled callback tomorrow.')">+ Callback scheduled</button>
+          </div>
+
+          <textarea
+            class="wrapup-textarea"
+            rows="3"
+            [(ngModel)]="noteContent"
+            placeholder="Enter call notes to sync with CRM..."
+          ></textarea>
+
+          <button
+            type="button"
+            class="btn-save-wrapup"
+            [disabled]="!selectedDisposition"
+            (click)="saveDisposition()"
+          >
+            <span>✓</span> Save & Ready for Next Call (Save & Ready)
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ================= RIGHT CRM & CUSTOMER PANE ================= -->
+  <div class="crm-customer-pane">
+    <!-- Customer Identity Card -->
+    <div class="customer-hero-card">
+      <div class="customer-hero-left">
+        <div class="customer-big-avatar">{{ telephony.currentCustomer().name[0] }}</div>
+        <div class="customer-hero-details">
+          <div class="customer-name-row">
+            <h2 class="customer-fullname">{{ telephony.currentCustomer().name }}</h2>
+            <span class="vip-badge" [ngClass]="telephony.currentCustomer().tier">{{ telephony.currentCustomer().tier }}</span>
+          </div>
+          <div class="customer-contact-meta">
+            <span>📞 {{ telephony.currentCustomer().phone || telephony.activeCallerNumber() || 'No number dialed' }}</span>
+            <span>•</span>
+            <span>✉ {{ telephony.currentCustomer().email || 'client@telecom.bd' }}</span>
+            <span>•</span>
+            <span class="crm-id-code">{{ telephony.currentCustomer().crmId }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="customer-hero-right">
+        <div class="mini-stat-item">
+          <span class="stat-lbl">Account No</span>
+          <span class="stat-val font-mono">{{ telephony.currentCustomer().accountNo || 'ACC-BTCL-01' }}</span>
+        </div>
+        <div class="mini-stat-item">
+          <span class="stat-lbl">Trunk Gateway</span>
+          <span class="stat-val">BTCL-E1-01</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CRM Interactive Tabs -->
+    <div class="crm-tab-bar">
+      <button class="crm-tab-btn" [class.active]="activeTab === 'info'" (click)="activeTab = 'info'">
+        <span>👤</span> Customer Profile
+      </button>
+      <button class="crm-tab-btn" [class.active]="activeTab === 'history'" (click)="activeTab = 'history'">
+        <span>📜</span> Call History ({{ telephony.callHistory().length }})
+      </button>
+      <button class="crm-tab-btn" [class.active]="activeTab === 'notes'" (click)="activeTab = 'notes'">
+        <span>📝</span> CRM Notes ({{ telephony.currentCustomer().notes.length }})
+      </button>
+    </div>
+
+    <!-- Tab 1: Customer Profile -->
+    @if (activeTab === 'info') {
+      <div class="crm-tab-content">
+        <div class="details-spec-grid">
+          <div class="spec-cell">
+            <span class="cell-label">Primary Broadband Plan:</span>
+            <span class="cell-value font-bold text-blue">100 Mbps Dedicated Corporate Fiber</span>
+          </div>
+          <div class="spec-cell">
+            <span class="cell-label">Billing Cycle / Status:</span>
+            <span class="cell-value"><span class="badge-active">Paid Up-to-date</span> (Auto-Debit)</span>
+          </div>
+          <div class="spec-cell">
+            <span class="cell-label">Installation Address:</span>
+            <span class="cell-value">{{ telephony.currentCustomer().address || 'Gulshan-2, Dhaka 1212' }}</span>
+          </div>
+          <div class="spec-cell">
+            <span class="cell-label">SLA Guarantee:</span>
+            <span class="cell-value">99.95% Enterprise Telecom SLA</span>
+          </div>
+        </div>
+
+        <!-- Notes preview list -->
+        <div class="timeline-box mt-3">
+          <div class="timeline-title">Customer Interaction Timeline</div>
+          <div class="timeline-items">
+            @for (n of telephony.currentCustomer().notes; track n) {
+              <div class="timeline-item">
+                <span class="timeline-dot"></span>
+                <span class="timeline-text">{{ n }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Tab 2: Call History -->
+    @else if (activeTab === 'history') {
+      <div class="crm-tab-content">
+        <div class="history-sync-bar">
+          <span class="sync-count">💾 <strong>{{ telephony.callHistory().length }}</strong> calls saved in MS SQL Server</span>
+          <button type="button" class="btn-sync-history" (click)="telephony.loadCallHistory()" title="Refresh calls from SQL Server">
+            🔄 Refresh History
+          </button>
+        </div>
+        <div class="history-table-box">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Number</th>
+                <th>Customer</th>
+                <th>Duration</th>
+                <th>Timestamp</th>
+                <th>Outcome</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (h of telephony.callHistory(); track h.id) {
+                <tr>
+                  <td>
+                    <span class="history-pill" [ngClass]="h.direction">{{ h.direction }}</span>
+                  </td>
+                  <td class="font-mono font-bold">{{ h.number }}</td>
+                  <td>{{ h.customerName }}</td>
+                  <td>{{ formatDuration(h.durationSeconds) }}</td>
+                  <td class="text-muted">{{ h.timestamp }}</td>
+                  <td>
+                    <span class="disposition-tag">{{ h.disposition || 'Completed' }}</span>
+                  </td>
+                  <td>
+                    <button class="btn-callback" (click)="callbackNumber(h.number)" title="Call back this customer">
+                      📞 Call
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- Tab 3: CRM Notes & Live Add Note -->
+    @else if (activeTab === 'notes') {
+      <div class="crm-tab-content">
+        <!-- Add Note Card -->
+        <div class="add-note-card">
+          <div class="add-note-header">Add New Interaction Note to Customer Record</div>
+          <div class="add-note-row">
+            <input
+              type="text"
+              class="add-note-input"
+              [(ngModel)]="newNoteText"
+              placeholder="Type note (e.g. Customer requested invoice copy via email)..."
+              (keydown.enter)="addCustomerNote()"
+            />
+            <button class="btn-add-note" [disabled]="!newNoteText.trim()" (click)="addCustomerNote()">
+              + Post Note
+            </button>
+          </div>
+        </div>
+
+        <!-- Notes List -->
+        <div class="notes-feed">
+          @for (n of telephony.currentCustomer().notes; track n) {
+            <div class="note-feed-item">
+              <div class="note-feed-header">
+                <span class="note-author">Agent Rahim Ahmed (1001)</span>
+                <span class="note-time">Logged Note</span>
+              </div>
+              <div class="note-feed-body">{{ n }}</div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ================= MODAL: CALL TRANSFER ================= -->
+@if (showTransferModal) {
+  <div class="modal-backdrop" (click)="showTransferModal = false">
+    <div class="transfer-modal-card" (click)="$event.stopPropagation()">
+      <div class="tmodal-header">
+        <div class="tmodal-title">
+          <span>↗</span>
+          <span>Transfer Active Call (কল স্থানান্তর)</span>
+        </div>
+        <button class="tmodal-close" (click)="showTransferModal = false">✕</button>
+      </div>
+
+      <div class="tmodal-body">
+        <div class="tmodal-desc">
+          Currently connected with: <strong>{{ telephony.activeCallerNumber() }}</strong>
+        </div>
+
+        <label class="section-label">Select Destination Agent or Queue:</label>
+        <div class="transfer-agents-list">
+          @for (a of telephony.agentsList(); track a.extension) {
+            @if (a.extension !== '1001') {
+              <div
+                class="agent-transfer-tile"
+                [class.selected]="selectedTransferExt === a.extension"
+                (click)="selectedTransferExt = a.extension"
+              >
+                <div class="atile-left">
+                  <span class="status-indicator-dot" [ngClass]="a.state"></span>
+                  <div>
+                    <div class="atile-name">{{ a.name }}</div>
+                    <div class="atile-role">{{ a.role }} • Ext: {{ a.extension }}</div>
+                  </div>
+                </div>
+                <span class="atile-state">{{ a.state }}</span>
+              </div>
+            }
+          }
+        </div>
+
+        <label class="section-label mt-3">Or Enter Custom Number / Extension:</label>
+        <input
+          type="tel"
+          class="transfer-input"
+          [(ngModel)]="selectedTransferExt"
+          placeholder="e.g. 1002 or +88017..."
+        />
+
+        <label class="section-label mt-3">Transfer Type:</label>
+        <div class="transfer-type-selector">
+          <button
+            type="button"
+            class="ttype-btn"
+            [class.active]="transferMode === 'Blind'"
+            (click)="transferMode = 'Blind'"
+          >
+            Blind Transfer 
+          </button>
+          <button
+            type="button"
+            class="ttype-btn"
+            [class.active]="transferMode === 'Attended'"
+            (click)="transferMode = 'Attended'"
+          >
+            Attended / Warm Transfer 
+          </button>
+        </div>
+      </div>
+
+      <div class="tmodal-footer">
+        <button class="btn-cancel-transfer" (click)="showTransferModal = false">Cancel</button>
+        <button
+          class="btn-confirm-transfer"
+          [disabled]="!selectedTransferExt.trim()"
+          (click)="confirmTransfer()"
+        >
+          Transfer Call Now
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,17 @@
+d:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\bin\Debug\net8.0\CallCenter.Telephony.FreeSwitch.deps.json
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\bin\Debug\net8.0\CallCenter.Telephony.FreeSwitch.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\bin\Debug\net8.0\CallCenter.Telephony.FreeSwitch.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\bin\Debug\net8.0\CallCenter.Application.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\bin\Debug\net8.0\CallCenter.Domain.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\bin\Debug\net8.0\CallCenter.Domain.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\bin\Debug\net8.0\CallCenter.Application.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.csproj.AssemblyReference.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.GeneratedMSBuildEditorConfig.editorconfig
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.AssemblyInfoInputs.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.AssemblyInfo.cs
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.csproj.CoreCompileInputs.cache
+d:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCent.265F5AB1.Up2Date
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\refint\CallCenter.Telephony.FreeSwitch.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.pdb
+d:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\ref\CallCenter.Telephony.FreeSwitch.dll

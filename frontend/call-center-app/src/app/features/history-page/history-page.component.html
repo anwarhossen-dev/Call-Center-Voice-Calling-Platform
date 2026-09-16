@@ -1,0 +1,180 @@
+<div class="history-page-container">
+  <!-- Page Header -->
+  <div class="history-header">
+    <div class="header-left">
+      <div class="header-icon-box">📞</div>
+      <div>
+        <h1 class="page-title">Call History &amp; Logs</h1>
+        <p class="page-subtitle">Real-time interaction history synchronized directly with <strong>Microsoft SQL Server (CallCenterDb)</strong></p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-refresh" (click)="refreshHistory()" [disabled]="isRefreshing()" title="Fetch latest calls from SQL Server">
+        <span class="refresh-icon" [class.spinning]="isRefreshing()">🔄</span>
+        <span>{{ isRefreshing() ? 'Syncing...' : 'Sync with SQL Server' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary KPI Ribbon -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon total">📊</div>
+      <div class="kpi-info">
+        <div class="kpi-num">{{ telephony.callHistory().length }}</div>
+        <div class="kpi-label">Total Logged Calls</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon completed">✅</div>
+      <div class="kpi-info">
+        <div class="kpi-num">{{ getCompletedCount() }}</div>
+        <div class="kpi-label">Completed / Answered</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon cancelled">✕</div>
+      <div class="kpi-info">
+        <div class="kpi-num">{{ getCancelledCount() }}</div>
+        <div class="kpi-label">Cancelled / Abandoned</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon db">💾</div>
+      <div class="kpi-info">
+        <div class="kpi-num">MS SQL Server</div>
+        <div class="kpi-label">Source: (localdb)\mssqllocaldb</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar: Search & Filter Tabs -->
+  <div class="history-toolbar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search by Phone number, Disposition, Notes or Customer ID..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+      @if (searchQuery()) {
+        <button class="btn-clear-search" (click)="searchQuery.set('')">✕</button>
+      }
+    </div>
+
+    <div class="filter-pill-group">
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'all'"
+        (click)="selectedFilter.set('all')"
+      >
+        All ({{ telephony.callHistory().length }})
+      </button>
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'completed'"
+        (click)="selectedFilter.set('completed')"
+      >
+        ✓ Completed ({{ getCompletedCount() }})
+      </button>
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'cancelled'"
+        (click)="selectedFilter.set('cancelled')"
+      >
+        ✕ Cancelled ({{ getCancelledCount() }})
+      </button>
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'outbound'"
+        (click)="selectedFilter.set('outbound')"
+      >
+        ↗ Outbound
+      </button>
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'inbound'"
+        (click)="selectedFilter.set('inbound')"
+      >
+        ↙ Inbound
+      </button>
+    </div>
+  </div>
+
+  <!-- Call History Table -->
+  <div class="table-container">
+    @if (filteredCalls().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <h3>No Call Records Found</h3>
+        <p>No call logs matched your filter or search query in the SQL database.</p>
+        <button class="btn-reset" (click)="searchQuery.set(''); selectedFilter.set('all')">Reset Filters</button>
+      </div>
+    } @else {
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Direction</th>
+            <th>Phone Number</th>
+            <th>Customer / Identity</th>
+            <th>Duration</th>
+            <th>Timestamp</th>
+            <th>Status / Outcome</th>
+            <th>Agent Notes</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of filteredCalls(); track c.id) {
+            <tr class="history-row">
+              <td>
+                <span class="direction-badge" [ngClass]="c.direction">
+                  <span class="badge-icon">{{ c.direction === 'Inbound' ? '↙' : '↗' }}</span>
+                  <span>{{ c.direction }}</span>
+                </span>
+              </td>
+              <td>
+                <span class="phone-mono">{{ c.number }}</span>
+              </td>
+              <td>
+                <div class="customer-cell">
+                  <span class="customer-name">{{ c.customerName || 'General Caller' }}</span>
+                  <span class="customer-sub font-mono">{{ c.callUuid ? (c.callUuid | slice:0:16) + '...' : '' }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="duration-badge">{{ formatDuration(c.durationSeconds) }}</span>
+              </td>
+              <td>
+                <span class="time-stamp">{{ c.timestamp }}</span>
+              </td>
+              <td>
+                <span class="outcome-pill" [ngClass]="c.disposition || c.status">
+                  <span class="pill-dot"></span>
+                  <span>{{ c.disposition || c.status }}</span>
+                </span>
+              </td>
+              <td class="notes-cell">
+                <span class="notes-text" [title]="c.notes">{{ c.notes ? c.notes : '— No notes recorded —' }}</span>
+              </td>
+              <td class="text-right">
+                <button
+                  class="btn-call-back"
+                  (click)="callCustomer(c.number)"
+                  title="Place outbound call to this number"
+                >
+                  <span>📞 Call</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

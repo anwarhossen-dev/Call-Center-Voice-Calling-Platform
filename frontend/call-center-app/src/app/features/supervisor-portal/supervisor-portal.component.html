@@ -1,0 +1,216 @@
+﻿<div class="supervisor-container">
+  <!-- Active Coaching Notification Bar (if in session) -->
+  @if (telephony.coachingSession(); as session) {
+    <div class="coaching-active-banner" [ngClass]="session.mode">
+      <div class="coaching-left">
+        <span class="coaching-pulse-dot"></span>
+        <div class="coaching-meta">
+          <div class="coaching-title">
+            Active Real-time Audio Intervention:
+            <span class="coaching-mode-pill">{{ session.mode }}</span>
+          </div>
+          <div class="coaching-sub">
+            Target Agent: <strong>{{ session.agentName }} (Ext: {{ session.extension }})</strong> • Direct FreeSWITCH ESL Eavesdrop Audio Leg
+          </div>
+        </div>
+      </div>
+
+      <div class="coaching-center">
+        <div class="coaching-wave">
+          <span class="cbar"></span><span class="cbar"></span><span class="cbar"></span>
+          <span class="cbar"></span><span class="cbar"></span>
+        </div>
+        <span class="coaching-audio-label">Live Stream 48kHz</span>
+      </div>
+
+      <div class="coaching-right">
+        <button class="btn-stop-coaching" (click)="telephony.stopCoaching()">
+          ⏹ Disconnect Audio 
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Top 4 KPI Metrics -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">Total Calls</span>
+        <span class="kpi-badge">Today</span>
+      </div>
+      <div class="kpi-value text-blue">{{ stats().totalCalls }}</div>
+      <div class="kpi-sub">Total inbound & outbound traffic</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">Answered Rate</span>
+        <span class="kpi-badge success">SLA Met</span>
+      </div>
+      <div class="kpi-value text-green">{{ stats().answered }}</div>
+      <div class="kpi-sub">91.1% Service Level Agreement</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">Missed / Abandoned</span>
+        <span class="kpi-badge danger">Target &lt; 10%</span>
+      </div>
+      <div class="kpi-value text-red">{{ stats().missed }}</div>
+      <div class="kpi-sub">8.9% Abandonment Rate</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-title">Average Handle Time</span>
+        <span class="kpi-badge">Target &lt; 05:00</span>
+      </div>
+      <div class="kpi-value text-dark">{{ stats().avgHandleTime }}</div>
+      <div class="kpi-sub">Talk + Wrap-up (ACW) duration</div>
+    </div>
+  </div>
+
+  <!-- Mid Row: Agent Status Breakdown & Queues -->
+  <div class="mid-grid">
+    <!-- Agent State Breakdown -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3 class="dash-title">Agent Fleet Status</h3>
+        <span class="badge-total">{{ telephony.agentsList().length }} Active Agents</span>
+      </div>
+
+      <div class="agent-breakdown-body">
+        <div class="progress-bar-stacked">
+          <div class="seg seg-avail" style="width: 50%" title="Available: 50%"></div>
+          <div class="seg seg-oncall" style="width: 25%" title="On Call: 25%"></div>
+          <div class="seg seg-break" style="width: 15%" title="Break: 15%"></div>
+          <div class="seg seg-acw" style="width: 10%" title="Wrap-up: 10%"></div>
+        </div>
+
+        <div class="status-legend-grid">
+          <div class="legend-item">
+            <span class="sdot dot-avail"></span>
+            <span class="lname">Available:</span>
+            <span class="lval font-bold">{{ stats().agentBreakdown.available }}</span>
+          </div>
+          <div class="legend-item">
+            <span class="sdot dot-oncall"></span>
+            <span class="lname">On Call:</span>
+            <span class="lval font-bold">{{ stats().agentBreakdown.onCall }}</span>
+          </div>
+          <div class="legend-item">
+            <span class="sdot dot-break"></span>
+            <span class="lname">Break / Lunch:</span>
+            <span class="lval font-bold">{{ stats().agentBreakdown.break }}</span>
+          </div>
+          <div class="legend-item">
+            <span class="sdot dot-acw"></span>
+            <span class="lname">Wrap-up (ACW):</span>
+            <span class="lval font-bold">{{ stats().agentBreakdown.acw }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACD Queue Overview -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3 class="dash-title">Live ACD Queues</h3>
+        <span class="live-tag">● REALTIME</span>
+      </div>
+
+      <table class="queue-table">
+        <thead>
+          <tr>
+            <th>Queue Name</th>
+            <th>Waiting</th>
+            <th>Longest Wait</th>
+            <th>Strategy</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (q of stats().queues; track q.queueName) {
+            <tr>
+              <td class="font-bold text-dark">{{ q.queueName }}</td>
+              <td>
+                <span class="badge-waiting" [class.urgent]="q.waiting > 8">
+                  {{ q.waiting }} calls
+                </span>
+              </td>
+              <td class="font-mono">{{ q.longestWait }}</td>
+              <td class="text-muted">Longest Idle</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Agent Live Monitoring & Coaching Grid -->
+  <div class="dash-card">
+    <div class="dash-card-header">
+      <div>
+        <h3 class="dash-title">Live Agent Directory & Coaching Controls</h3>
+        <div class="dash-sub">Click Spy, Whisper, or Barge-In to intervene on live agent calls in real-time.</div>
+      </div>
+    </div>
+
+    <table class="agents-table">
+      <thead>
+        <tr>
+          <th>Agent Name</th>
+          <th>Extension</th>
+          <th>Role / Department</th>
+          <th>Current State</th>
+          <th>Time in State</th>
+          <th>Calls Today</th>
+          <th>Audio Coaching Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (a of telephony.agentsList(); track a.extension) {
+          <tr>
+            <td class="font-bold text-dark">{{ a.name }}</td>
+            <td class="font-mono">{{ a.extension }}</td>
+            <td>{{ a.role }}</td>
+            <td>
+              <span class="agent-state-pill" [ngClass]="a.state">
+                <span class="sdot"></span> {{ a.state }}
+              </span>
+            </td>
+            <td class="font-mono text-muted">{{ formatDuration(a.durationInStateSeconds) }}</td>
+            <td class="font-bold">{{ a.callsHandledToday }}</td>
+            <td>
+              <div class="intervention-btn-group">
+                <button
+                  type="button"
+                  class="btn-coaching btn-spy"
+                  (click)="startCoaching('SilentSpy', a)"
+                  title="Listen secretly to this call (Agent & Customer cannot hear you)"
+                >
+                  👁 Spy
+                </button>
+                <button
+                  type="button"
+                  class="btn-coaching btn-whisper"
+                  (click)="startCoaching('Whisper', a)"
+                  title="Speak to Agent only (Customer cannot hear you)"
+                >
+                  🗣 Whisper
+                </button>
+                <button
+                  type="button"
+                  class="btn-coaching btn-barge"
+                  (click)="startCoaching('BargeIn', a)"
+                  title="Full 3-way conference call (Both parties hear you)"
+                >
+                  👥 Barge
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

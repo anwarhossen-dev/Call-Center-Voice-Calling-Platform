@@ -1,0 +1,158 @@
+<div class="recordings-page-layout">
+  <!-- Top Action Header -->
+  <div class="page-top-header">
+    <div class="header-titles">
+      <div class="title-badge">
+        <span class="badge-icon">🎙️</span>
+        <span class="badge-text">Carrier &amp; WebRTC Audio Vault</span>
+      </div>
+      <h1 class="main-page-title">Voice Call Recordings Archive</h1>
+      <p class="page-subtitle">
+        ব্রাউজার মাইক্রোফোনের আসল ভয়েস এবং BTCL SIP ট্রাঙ্কের ডুয়েল-ট্র্যাক (Stereo 16kHz) কল রেকর্ডিংস লাইব্রেরি।
+      </p>
+    </div>
+
+    <div class="header-stats-chips">
+      <div class="stat-box">
+        <span class="sb-val">{{ audioRecorder.recordedCalls().length }}</span>
+        <span class="sb-label">Total Recordings</span>
+      </div>
+      <div class="stat-box">
+        <span class="sb-val online">100%</span>
+        <span class="sb-label">Audio Quality</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Ribbon -->
+  <div class="search-filter-card">
+    <div class="search-box-wrap">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="গ্রাহকের নাম, মোবাইল নম্বর বা Call UUID দিয়ে খুঁজুন..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+      @if (searchQuery()) {
+        <button class="btn-clear" (click)="searchQuery.set('')">✕</button>
+      }
+    </div>
+
+    <div class="filter-pills">
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'all'"
+        (click)="selectedFilter.set('all')"
+      >
+        All Recordings
+      </button>
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'today'"
+        (click)="selectedFilter.set('today')"
+      >
+        Today
+      </button>
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'outbound'"
+        (click)="selectedFilter.set('outbound')"
+      >
+        Outbound Calls
+      </button>
+      <button
+        class="filter-pill"
+        [class.active]="selectedFilter() === 'inbound'"
+        (click)="selectedFilter.set('inbound')"
+      >
+        Inbound Calls
+      </button>
+    </div>
+  </div>
+
+  <!-- Recordings Table Container -->
+  <div class="table-surface-card">
+    <table class="recordings-table">
+      <thead>
+        <tr>
+          <th>Call UUID</th>
+          <th>গ্রাহক ও ফোন নম্বর</th>
+          <th>স্থায়িত্বকাল (Duration)</th>
+          <th>রেকর্ড করার সময়</th>
+          <th>চ্যানেল / কোডেক</th>
+          <th>প্লেব্যাক কন্ট্রোল</th>
+          <th>অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (rec of filteredRecordings(); track rec.id) {
+          <tr [class.is-playing-row]="audioRecorder.activePlayingId() === rec.id">
+            <td class="col-uuid">
+              <span class="uuid-pill font-mono">{{ rec.callUuid }}</span>
+            </td>
+            <td>
+              <div class="caller-name font-bold">{{ rec.customerName }}</div>
+              <div class="caller-phone font-mono">{{ rec.phoneNumber }}</div>
+            </td>
+            <td>
+              <span class="duration-badge">
+                ⏱ {{ formatDuration(rec.durationSeconds) }}
+              </span>
+            </td>
+            <td class="col-time">{{ rec.timestamp }}</td>
+            <td>
+              <span class="codec-tag">Opus Stereo (Left/Right)</span>
+            </td>
+            <td>
+              <div class="player-controls-cell">
+                <button
+                  type="button"
+                  class="btn-play-pause"
+                  [class.playing]="audioRecorder.activePlayingId() === rec.id"
+                  (click)="audioRecorder.playRecording(rec)"
+                >
+                  <span class="play-icon">{{ audioRecorder.activePlayingId() === rec.id ? '⏸' : '▶' }}</span>
+                  <span>{{ audioRecorder.activePlayingId() === rec.id ? 'Pause' : 'Play Voice' }}</span>
+                </button>
+                @if (audioRecorder.activePlayingId() === rec.id) {
+                  <div class="playing-equalizer">
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                  </div>
+                }
+              </div>
+            </td>
+            <td>
+              @if (rec.audioUrl) {
+                <a
+                  [href]="rec.audioUrl"
+                  [download]="'call-recording-' + rec.callUuid + '.webm'"
+                  class="btn-action-download"
+                  title="Download recording"
+                >
+                  <span>⬇</span> Download
+                </a>
+              } @else {
+                <span class="text-muted-xs">Internal Demo</span>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-state-cell">
+              <div class="empty-state-box">
+                <span class="empty-icon">📂</span>
+                <h3>কোনো রেকর্ডিং পাওয়া যায়নি</h3>
+                <p>এখনই এজেন্ট পোর্টাল থেকে একটি কল করে কথা বললে স্বয়ংক্রিয়ভাবে এখানে ভয়েস ফাইল চলে আসবে।</p>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

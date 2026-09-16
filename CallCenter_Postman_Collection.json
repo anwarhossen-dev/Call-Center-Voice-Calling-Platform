@@ -1,0 +1,198 @@
+{
+  "info": {
+    "_postman_id": "call-center-telephony-api-v1",
+    "name": "Call Center Voice Calling Platform API",
+    "description": "Comprehensive Postman API collection for Call Center Telephony, Twilio Dispatch, Inbound/Outbound Calling, Agent States, Dispositions, and Supervisor Monitoring.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "testMobile",
+      "value": "+8801777498421",
+      "type": "string"
+    },
+    {
+      "key": "agentExt",
+      "value": "1001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Telephony & Calling",
+      "item": [
+        {
+          "name": "Originate Outbound Call (কল করুন)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agentExtension\": \"{{agentExt}}\",\n  \"destinationNumber\": \"{{testMobile}}\",\n  \"customerId\": \"CRM-8042\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Calls/originate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Calls", "originate"]
+            }
+          }
+        },
+        {
+          "name": "Simulate Inbound Call (ইনকামিং কল টেস্ট)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Calls/simulate-inbound?callerNumber={{testMobile}}&did=09612345678",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Calls", "simulate-inbound"],
+              "query": [
+                {
+                  "key": "callerNumber",
+                  "value": "{{testMobile}}"
+                },
+                {
+                  "key": "did",
+                  "value": "09612345678"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Customer Lookup by Phone (গ্রাহকের তথ্য সন্ধান)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Calls/lookup?phoneNumber={{testMobile}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Calls", "lookup"],
+              "query": [
+                {
+                  "key": "phoneNumber",
+                  "value": "{{testMobile}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Twilio Carrier Integration",
+      "item": [
+        {
+          "name": "Get Twilio Config",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Calls/twilio/config",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Calls", "twilio", "config"]
+            }
+          }
+        },
+        {
+          "name": "Update Twilio Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountSid\": \"ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\n  \"authToken\": \"your_auth_token_here\",\n  \"fromPhoneNumber\": \"+12055550199\",\n  \"enabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Calls/twilio/config",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Calls", "twilio", "config"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Dispositions & Notes",
+      "item": [
+        {
+          "name": "Get All Dispositions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Dispositions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Dispositions"]
+            }
+          }
+        },
+        {
+          "name": "Submit Disposition",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"callUuid\": \"call-test-uuid-01\",\n  \"dispositionName\": \"Resolved\",\n  \"notes\": \"Customer query resolved successfully.\",\n  \"customerId\": \"CRM-8042\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Dispositions/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Dispositions", "submit"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Agent States & Supervision",
+      "item": [
+        {
+          "name": "Get Agent Live States",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Agents/states",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Agents", "states"]
+            }
+          }
+        },
+        {
+          "name": "Supervisor Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Supervisors/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Supervisors", "dashboard"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

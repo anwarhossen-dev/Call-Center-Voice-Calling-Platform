@@ -1,0 +1,17 @@
+d:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\bin\Debug\net8.0\CallCenter.Infrastructure.deps.json
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\bin\Debug\net8.0\CallCenter.Infrastructure.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\bin\Debug\net8.0\CallCenter.Infrastructure.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\bin\Debug\net8.0\CallCenter.Application.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\bin\Debug\net8.0\CallCenter.Domain.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\bin\Debug\net8.0\CallCenter.Domain.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\bin\Debug\net8.0\CallCenter.Application.pdb
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\CallCenter.Infrastructure.csproj.AssemblyReference.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\CallCenter.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\CallCenter.Infrastructure.AssemblyInfoInputs.cache
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\CallCenter.Infrastructure.AssemblyInfo.cs
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\CallCenter.Infrastructure.csproj.CoreCompileInputs.cache
+d:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\CallCent.384CD5FB.Up2Date
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\CallCenter.Infrastructure.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\refint\CallCenter.Infrastructure.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\CallCenter.Infrastructure.pdb
+d:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Infrastructure\obj\Debug\net8.0\ref\CallCenter.Infrastructure.dll

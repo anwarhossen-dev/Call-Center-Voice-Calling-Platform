@@ -1,0 +1,218 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Anwar\\Call Center Voice Calling Platform\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\Presentation\\CallCenter.WebApi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\core\\services\\telephony.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\call-center-app\\src\\app\\core\\services\\telephony.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\core\\services\\audio-recording.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:frontend\\call-center-app\\src\\app\\core\\services\\audio-recording.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WorkerService\\Worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\Presentation\\CallCenter.WorkerService\\Worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\CallCenter.WebApi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\Presentation\\CallCenter.WebApi\\CallCenter.WebApi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\Controllers\\Controllers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\Presentation\\CallCenter.WebApi\\Controllers\\Controllers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Domain\\Enums\\TelephonyEnums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\Core\\CallCenter.Domain\\Enums\\TelephonyEnums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Domain\\Entities\\Entities.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\Core\\CallCenter.Domain\\Entities\\Entities.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Application\\DTOs\\DTOs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:backend\\src\\Core\\CallCenter.Application\\DTOs\\DTOs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "agent-portal.component.ts",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts",
+              "RelativeDocumentMoniker": "frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts",
+              "RelativeToolTip": "frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-09-16T04:04:40.653Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "admin-portal.component.html",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.html",
+              "RelativeDocumentMoniker": "frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.html",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.html",
+              "RelativeToolTip": "frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.html",
+              "ViewState": "AgIAAGYAAAAAAAAAAAAAAMoAAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-15T17:28:18.45Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "admin-portal.component.css",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.css",
+              "RelativeDocumentMoniker": "frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.css",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.css",
+              "RelativeToolTip": "frontend\\call-center-app\\src\\app\\features\\admin-portal\\admin-portal.component.css",
+              "ViewState": "AgIAACkBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-09-15T17:28:06.464Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "telephony.service.ts",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\core\\services\\telephony.service.ts",
+              "RelativeDocumentMoniker": "frontend\\call-center-app\\src\\app\\core\\services\\telephony.service.ts",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\core\\services\\telephony.service.ts",
+              "RelativeToolTip": "frontend\\call-center-app\\src\\app\\core\\services\\telephony.service.ts",
+              "ViewState": "AgIAAAYCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-09-15T17:27:43.382Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "audio-recording.service.ts",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\core\\services\\audio-recording.service.ts",
+              "RelativeDocumentMoniker": "frontend\\call-center-app\\src\\app\\core\\services\\audio-recording.service.ts",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\core\\services\\audio-recording.service.ts",
+              "RelativeToolTip": "frontend\\call-center-app\\src\\app\\core\\services\\audio-recording.service.ts",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-09-15T17:27:10.47Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Worker.cs",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WorkerService\\Worker.cs",
+              "RelativeDocumentMoniker": "backend\\src\\Presentation\\CallCenter.WorkerService\\Worker.cs",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WorkerService\\Worker.cs",
+              "RelativeToolTip": "backend\\src\\Presentation\\CallCenter.WorkerService\\Worker.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-15T17:26:32.233Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\appsettings.json",
+              "RelativeDocumentMoniker": "backend\\src\\Presentation\\CallCenter.WebApi\\appsettings.json",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\appsettings.json",
+              "RelativeToolTip": "backend\\src\\Presentation\\CallCenter.WebApi\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-15T17:22:37.531Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CallCenter.WebApi.csproj",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\CallCenter.WebApi.csproj",
+              "RelativeDocumentMoniker": "backend\\src\\Presentation\\CallCenter.WebApi\\CallCenter.WebApi.csproj",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\CallCenter.WebApi.csproj",
+              "RelativeToolTip": "backend\\src\\Presentation\\CallCenter.WebApi\\CallCenter.WebApi.csproj",
+              "ViewState": "AgIAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-09-15T17:26:18.597Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Controllers.cs",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\Controllers\\Controllers.cs",
+              "RelativeDocumentMoniker": "backend\\src\\Presentation\\CallCenter.WebApi\\Controllers\\Controllers.cs",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\Controllers\\Controllers.cs",
+              "RelativeToolTip": "backend\\src\\Presentation\\CallCenter.WebApi\\Controllers\\Controllers.cs",
+              "ViewState": "AgIAAFQBAAAAAAAAAAAAABgAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-15T17:21:55.887Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "TelephonyEnums.cs",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Domain\\Enums\\TelephonyEnums.cs",
+              "RelativeDocumentMoniker": "backend\\src\\Core\\CallCenter.Domain\\Enums\\TelephonyEnums.cs",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Domain\\Enums\\TelephonyEnums.cs",
+              "RelativeToolTip": "backend\\src\\Core\\CallCenter.Domain\\Enums\\TelephonyEnums.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAAAUAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-15T17:21:22.322Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Entities.cs",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Domain\\Entities\\Entities.cs",
+              "RelativeDocumentMoniker": "backend\\src\\Core\\CallCenter.Domain\\Entities\\Entities.cs",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Domain\\Entities\\Entities.cs",
+              "RelativeToolTip": "backend\\src\\Core\\CallCenter.Domain\\Entities\\Entities.cs",
+              "ViewState": "AgIAALQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-15T17:21:08.026Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "DTOs.cs",
+              "DocumentMoniker": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Application\\DTOs\\DTOs.cs",
+              "RelativeDocumentMoniker": "backend\\src\\Core\\CallCenter.Application\\DTOs\\DTOs.cs",
+              "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Core\\CallCenter.Application\\DTOs\\DTOs.cs",
+              "RelativeToolTip": "backend\\src\\Core\\CallCenter.Application\\DTOs\\DTOs.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-15T17:20:25.67Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
