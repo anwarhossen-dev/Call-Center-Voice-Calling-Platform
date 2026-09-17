@@ -27,7 +27,7 @@
       "name": "1. Telephony & Calling",
       "item": [
         {
-          "name": "Originate Outbound Call (কল করুন)",
+          "name": "Originate Outbound Call",
           "request": {
             "method": "POST",
             "header": [
@@ -48,7 +48,7 @@
           }
         },
         {
-          "name": "Simulate Inbound Call (ইনকামিং কল টেস্ট)",
+          "name": "Simulate Inbound Call",
           "request": {
             "method": "POST",
             "header": [],
@@ -70,7 +70,7 @@
           }
         },
         {
-          "name": "Customer Lookup by Phone (গ্রাহকের তথ্য সন্ধান)",
+          "name": "Customer Lookup by Phone",
           "request": {
             "method": "GET",
             "header": [],

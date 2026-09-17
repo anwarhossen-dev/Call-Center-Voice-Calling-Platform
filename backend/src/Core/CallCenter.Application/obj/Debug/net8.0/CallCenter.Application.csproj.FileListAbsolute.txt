@@ -13,3 +13,4 @@ D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Applicat
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\refint\CallCenter.Application.dll
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.pdb
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\ref\CallCenter.Application.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Application\obj\Debug\net8.0\CallCenter.Application.sourcelink.json

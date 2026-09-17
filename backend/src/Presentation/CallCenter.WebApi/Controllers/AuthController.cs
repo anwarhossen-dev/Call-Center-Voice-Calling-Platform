@@ -66,8 +66,33 @@ public class AuthResponse
     public DateTimeOffset LoggedInAt { get; set; } = DateTimeOffset.UtcNow;
 }
 
+public class RefreshTokenRequest
+{
+    public string Token { get; set; } = string.Empty;
+}
+
+public class ChangePasswordRequest
+{
+    public string UsernameOrEmail { get; set; } = string.Empty;
+    public string CurrentPassword { get; set; } = string.Empty;
+    public string NewPassword { get; set; } = string.Empty;
+}
+
+public class ForgotPasswordRequest
+{
+    public string Email { get; set; } = string.Empty;
+}
+
+public class ResetPasswordRequest
+{
+    public string Token { get; set; } = string.Empty;
+    public string NewPassword { get; set; } = string.Empty;
+}
+
 [ApiController]
+[Route("api/v1/[controller]")]
 [Route("api/[controller]")]
+[Route("v1/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly CallCenterDbContext _db;
@@ -287,5 +312,147 @@ public class AuthController : ControllerBase
             AgentId = user.AgentProfile?.AgentId,
             Token = token ?? ""
         });
+    }
+
+    [HttpPost("refresh-token")]
+    public IActionResult RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Token))
+        {
+            return BadRequest(new { message = "Token is required." });
+        }
+
+        try
+        {
+            var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(request.Token));
+            var parts = decoded.Split(':');
+            var newToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{parts[0]}:{(parts.Length > 1 ? parts[1] : "user")}:{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}"));
+            return Ok(new { token = newToken, refreshedAt = DateTimeOffset.UtcNow });
+        }
+        catch
+        {
+            var newToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"session:{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}"));
+            return Ok(new { token = newToken, refreshedAt = DateTimeOffset.UtcNow });
+        }
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] RefreshTokenRequest? request)
+    {
+        if (request != null && !string.IsNullOrWhiteSpace(request.Token))
+        {
+            try
+            {
+                var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(request.Token));
+                var parts = decoded.Split(':');
+                if (parts.Length > 1)
+                {
+                    var user = await _db.Users.Include(u => u.AgentProfile).FirstOrDefaultAsync(u => u.Username == parts[1]);
+                    if (user?.AgentProfile != null)
+                    {
+                        user.AgentProfile.CurrentState = AgentState.Offline;
+                        await _db.SaveChangesAsync();
+                    }
+                }
+            }
+            catch {}
+        }
+        return Ok(new { message = "Logged out successfully." });
+    }
+
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.UsernameOrEmail) || string.IsNullOrWhiteSpace(request.NewPassword))
+        {
+            return BadRequest(new { message = "Username/email and new password are required." });
+        }
+
+        var identifier = request.UsernameOrEmail.Trim().ToLower();
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == identifier || u.Email.ToLower() == identifier);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found." });
+        }
+
+        if (!string.IsNullOrEmpty(request.CurrentPassword) && !PasswordHelper.VerifyPassword(request.CurrentPassword, user.PasswordHash))
+        {
+            return BadRequest(new { message = "Current password does not match." });
+        }
+
+        user.PasswordHash = PasswordHelper.HashPassword(request.NewPassword);
+        await _db.SaveChangesAsync();
+
+        return Ok(new { message = "Password changed successfully." });
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            return BadRequest(new { message = "Email is required." });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.Trim().ToLower());
+        // For security, always return success message
+        var resetToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{request.Email}:{DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds()}"));
+        return Ok(new
+        {
+            message = "If this email is registered, a password reset token has been generated.",
+            resetToken = resetToken
+        });
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Token) || string.IsNullOrWhiteSpace(request.NewPassword))
+        {
+            return BadRequest(new { message = "Token and new password are required." });
+        }
+
+        try
+        {
+            var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(request.Token));
+            var parts = decoded.Split(':');
+            var email = parts[0];
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            if (user != null)
+            {
+                user.PasswordHash = PasswordHelper.HashPassword(request.NewPassword);
+                await _db.SaveChangesAsync();
+                return Ok(new { message = "Password reset successfully. You may now log in." });
+            }
+        }
+        catch {}
+
+        return BadRequest(new { message = "Invalid or expired reset token." });
+    }
+
+    [HttpGet("permissions")]
+    public IActionResult GetPermissions([FromQuery] string? role)
+    {
+        var targetRole = role ?? "Agent";
+        var permissions = targetRole.ToLower() switch
+        {
+            "admin" => new[]
+            {
+                "calls.view", "calls.initiate", "calls.control", "recordings.view", "recordings.download", "recordings.delete",
+                "agents.manage", "users.manage", "roles.manage", "teams.manage", "queues.manage", "campaigns.manage",
+                "reports.view", "reports.export", "qa.manage", "settings.manage", "audit.view"
+            },
+            "supervisor" => new[]
+            {
+                "calls.view", "calls.monitor", "calls.barge", "calls.whisper", "recordings.view", "recordings.download",
+                "agents.view", "agents.status", "teams.view", "queues.view", "reports.view", "reports.export", "qa.manage"
+            },
+            _ => new[]
+            {
+                "calls.view", "calls.initiate", "calls.control", "recordings.view", "customers.view", "crm.activity"
+            }
+        };
+
+        return Ok(new { role = targetRole, permissions });
     }
 }

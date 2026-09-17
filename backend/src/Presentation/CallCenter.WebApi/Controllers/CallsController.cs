@@ -18,8 +18,26 @@ public class TwilioConfigDto
     public bool Enabled { get; set; } = false;
 }
 
+public class TransferCallRequest
+{
+    public string TargetExtension { get; set; } = string.Empty;
+    public string TransferMode { get; set; } = "Blind";
+    public string? Reason { get; set; }
+    public string? CustomerName { get; set; }
+    public string? DestinationNumber { get; set; }
+}
+
+public class SaveDispositionRequest
+{
+    public Guid? DispositionId { get; set; }
+    public string? DispositionCode { get; set; }
+    public string? Notes { get; set; }
+}
+
 [ApiController]
+[Route("api/v1/[controller]")]
 [Route("api/[controller]")]
+[Route("v1/[controller]")]
 public class CallsController : ControllerBase
 {
     private static TwilioConfigDto _twilioConfig = new()
@@ -230,6 +248,47 @@ public class CallsController : ControllerBase
         return Ok(new { CallUuid = callUuid, Status = call?.Status.ToString() ?? "Completed", Success = result });
     }
 
+    [HttpPost("{callUuid}/transfer")]
+    public async Task<IActionResult> TransferCall(string callUuid, [FromBody] TransferCallRequest request)
+    {
+        var call = await _db.Calls.FirstOrDefaultAsync(c => c.CallUuid == callUuid);
+        if (call == null)
+        {
+            call = new Call
+            {
+                CallUuid = callUuid,
+                Direction = CallDirection.Outbound,
+                CallerNumber = "1001",
+                DestinationNumber = !string.IsNullOrWhiteSpace(request.DestinationNumber) ? request.DestinationNumber : request.TargetExtension,
+                CRMContactId = !string.IsNullOrWhiteSpace(request.CustomerName) ? request.CustomerName : "Customer",
+                InitiatedAt = DateTimeOffset.UtcNow.AddSeconds(-10)
+            };
+            _db.Calls.Add(call);
+        }
+
+        call.Status = CallStatus.Transferred;
+        call.EndedAt = DateTimeOffset.UtcNow;
+        if (call.AnsweredAt.HasValue)
+        {
+            call.TalkDurationSeconds = (int)(call.EndedAt.Value - call.AnsweredAt.Value).TotalSeconds;
+        }
+        call.TotalDurationSeconds = (int)(call.EndedAt.Value - call.InitiatedAt).TotalSeconds;
+        var transferLog = $"[Transferred] Handed over to Ext: {request.TargetExtension} ({request.TransferMode} Transfer). {request.Reason}";
+        call.AgentNotes = string.IsNullOrWhiteSpace(call.AgentNotes) ? transferLog : $"{call.AgentNotes} | {transferLog}";
+
+        await _db.SaveChangesAsync();
+        _logger.LogInformation("Call {Uuid} successfully transferred to {Ext} ({Mode}) and persisted to DB", callUuid, request.TargetExtension, request.TransferMode);
+
+        return Ok(new
+        {
+            Success = true,
+            CallUuid = callUuid,
+            Status = "Transferred",
+            TargetExtension = request.TargetExtension,
+            TransferMode = request.TransferMode
+        });
+    }
+
     [HttpGet("history")]
     public async Task<IActionResult> GetCallHistory([FromQuery] int limit = 100, [FromQuery] string? search = null, [FromQuery] string? direction = null)
     {
@@ -279,5 +338,223 @@ public class CallsController : ControllerBase
         });
 
         return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> SearchCalls(
+        [FromQuery] string? status,
+        [FromQuery] Guid? agentId,
+        [FromQuery] Guid? queueId,
+        [FromQuery] Guid? campaignId,
+        [FromQuery] string? callType,
+        [FromQuery] DateTimeOffset? fromDate,
+        [FromQuery] DateTimeOffset? toDate,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20)
+    {
+        var query = _db.Calls
+            .Include(c => c.Agent)
+            .Include(c => c.Queue)
+            .Include(c => c.Campaign)
+            .Include(c => c.Disposition)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(status) && Enum.TryParse<CallStatus>(status, true, out var st))
+        {
+            query = query.Where(c => c.Status == st);
+        }
+
+        if (agentId.HasValue) query = query.Where(c => c.AgentId == agentId.Value);
+        if (queueId.HasValue) query = query.Where(c => c.QueueId == queueId.Value);
+        if (campaignId.HasValue) query = query.Where(c => c.CampaignId == campaignId.Value);
+        if (fromDate.HasValue) query = query.Where(c => c.StartTime >= fromDate.Value);
+        if (toDate.HasValue) query = query.Where(c => c.StartTime <= toDate.Value);
+
+        var totalCount = await query.CountAsync();
+        var calls = await query
+            .OrderByDescending(c => c.StartTime)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(c => new
+            {
+                callId = c.CallId,
+                callUuid = c.CallUuid,
+                callerNumber = c.CallerNumber,
+                destinationNumber = c.DestinationNumber,
+                direction = c.Direction.ToString(),
+                type = c.Type,
+                status = c.Status.ToString(),
+                duration = c.Duration > 0 ? c.Duration : c.TotalDurationSeconds,
+                talkDuration = c.TalkDurationSeconds,
+                agentId = c.AgentId,
+                agentName = c.Agent != null ? c.Agent.DisplayName : null,
+                queueName = c.Queue != null ? c.Queue.QueueName : null,
+                campaignName = c.Campaign != null ? c.Campaign.CampaignName : null,
+                disposition = c.Disposition != null ? c.Disposition.DispositionName : null,
+                crmContactId = c.CRMContactId,
+                startTime = c.StartTime,
+                endTime = c.EndTime
+            })
+            .ToListAsync();
+
+        return Ok(new { total = totalCount, page, pageSize, data = calls });
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCallDetails(string id)
+    {
+        Guid? callGuid = Guid.TryParse(id, out var g) ? g : null;
+        var call = await _db.Calls
+            .Include(c => c.Agent)
+            .Include(c => c.Queue)
+            .Include(c => c.Campaign)
+            .Include(c => c.Disposition)
+            .Include(c => c.Recording)
+            .Include(c => c.Events)
+            .FirstOrDefaultAsync(c => c.CallUuid == id || (callGuid.HasValue && c.CallId == callGuid.Value));
+
+        if (call == null) return NotFound(new { message = "Call not found." });
+
+        return Ok(new
+        {
+            callId = call.CallId,
+            callUuid = call.CallUuid,
+            callerNumber = call.CallerNumber,
+            destinationNumber = call.DestinationNumber,
+            direction = call.Direction.ToString(),
+            type = call.Type,
+            status = call.Status.ToString(),
+            duration = call.Duration,
+            talkDuration = call.TalkDurationSeconds,
+            holdDuration = call.HoldDurationSeconds,
+            waitDuration = call.WaitDurationSeconds,
+            agentId = call.AgentId,
+            agentName = call.Agent?.DisplayName,
+            queueId = call.QueueId,
+            queueName = call.Queue?.QueueName,
+            campaignId = call.CampaignId,
+            campaignName = call.Campaign?.CampaignName,
+            disposition = call.Disposition?.DispositionName,
+            crmContactId = call.CRMContactId,
+            agentNotes = call.AgentNotes,
+            startTime = call.StartTime,
+            answeredAt = call.AnsweredAt,
+            endTime = call.EndTime,
+            hasRecording = call.Recording != null,
+            eventsCount = call.Events.Count
+        });
+    }
+
+    [HttpPost("outbound")]
+    public async Task<IActionResult> InitiateOutboundCall([FromBody] OriginateCallRequest request)
+    {
+        return await OriginateOutbound(request);
+    }
+
+    [HttpPost("{id}/answer")]
+    public async Task<IActionResult> AnswerCallById(string id)
+    {
+        Guid? callGuid = Guid.TryParse(id, out var g) ? g : null;
+        var call = await _db.Calls.FirstOrDefaultAsync(c => c.CallUuid == id || (callGuid.HasValue && c.CallId == callGuid.Value));
+        if (call != null)
+        {
+            call.Status = CallStatus.InProgress;
+            call.AnsweredAt = DateTimeOffset.UtcNow;
+            _db.CallEvents.Add(new CallEvent { EventId = Guid.NewGuid(), CallId = call.CallId, EventType = "ANSWERED", EventTime = DateTimeOffset.UtcNow, Description = "Call answered by agent" });
+            await _db.SaveChangesAsync();
+            return Ok(new { message = "Call answered", callUuid = call.CallUuid, status = "InProgress" });
+        }
+        return Ok(new { message = "Call answered", callUuid = id, status = "InProgress" });
+    }
+
+    [HttpPost("{id}/hangup")]
+    public async Task<IActionResult> HangupCallById(string id, [FromQuery] string? reason)
+    {
+        return await TerminateCall(id);
+    }
+
+    [HttpPost("{id}/resume")]
+    public async Task<IActionResult> ResumeCall(string id)
+    {
+        Guid? callGuid = Guid.TryParse(id, out var g) ? g : null;
+        var call = await _db.Calls.FirstOrDefaultAsync(c => c.CallUuid == id || (callGuid.HasValue && c.CallId == callGuid.Value));
+        if (call != null)
+        {
+            _db.CallEvents.Add(new CallEvent { EventId = Guid.NewGuid(), CallId = call.CallId, EventType = "RESUME", EventTime = DateTimeOffset.UtcNow, Description = "Call resumed from hold" });
+            await _db.SaveChangesAsync();
+        }
+        return Ok(new { message = "Call resumed", callId = id, isHold = false });
+    }
+
+    [HttpPost("{id}/mute")]
+    public async Task<IActionResult> MuteCall(string id)
+    {
+        return Ok(new { message = "Call muted", callId = id, isMuted = true });
+    }
+
+    [HttpPost("{id}/unmute")]
+    public async Task<IActionResult> UnmuteCall(string id)
+    {
+        return Ok(new { message = "Call unmuted", callId = id, isMuted = false });
+    }
+
+    [HttpPost("{id}/disposition")]
+    public async Task<IActionResult> SaveCallDisposition(string id, [FromBody] SaveDispositionRequest request)
+    {
+        Guid? callGuid = Guid.TryParse(id, out var g) ? g : null;
+        var call = await _db.Calls.FirstOrDefaultAsync(c => c.CallUuid == id || (callGuid.HasValue && c.CallId == callGuid.Value));
+        if (call == null) return NotFound(new { message = "Call not found." });
+
+        if (request.DispositionId.HasValue)
+        {
+            call.DispositionId = request.DispositionId;
+        }
+        else if (!string.IsNullOrWhiteSpace(request.DispositionCode))
+        {
+            var disp = await _db.Dispositions.FirstOrDefaultAsync(d => d.Code == request.DispositionCode || d.DispositionName == request.DispositionCode);
+            if (disp != null) call.DispositionId = disp.DispositionId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Notes))
+        {
+            call.AgentNotes = string.IsNullOrWhiteSpace(call.AgentNotes) ? request.Notes : $"{call.AgentNotes} | {request.Notes}";
+        }
+
+        await _db.SaveChangesAsync();
+        return Ok(new { message = "Disposition saved successfully", callId = call.CallId, dispositionId = call.DispositionId });
+    }
+
+    [HttpGet("{id}/events")]
+    public async Task<IActionResult> GetCallEvents(string id)
+    {
+        Guid? callGuid = Guid.TryParse(id, out var g) ? g : null;
+        var call = await _db.Calls.FirstOrDefaultAsync(c => c.CallUuid == id || (callGuid.HasValue && c.CallId == callGuid.Value));
+        if (call == null) return NotFound(new { message = "Call not found." });
+
+        var events = await _db.CallEvents
+            .Where(e => e.CallId == call.CallId)
+            .OrderBy(e => e.EventTime)
+            .ToListAsync();
+
+        return Ok(events);
+    }
+
+    [HttpGet("{id}/recording")]
+    public async Task<IActionResult> GetCallRecording(string id)
+    {
+        Guid? callGuid = Guid.TryParse(id, out var g) ? g : null;
+        var call = await _db.Calls.Include(c => c.Recording).FirstOrDefaultAsync(c => c.CallUuid == id || (callGuid.HasValue && c.CallId == callGuid.Value));
+        if (call == null) return NotFound(new { message = "Call not found." });
+
+        if (call.Recording != null)
+        {
+            return Ok(call.Recording);
+        }
+
+        var rec = await _db.CallRecordings.FirstOrDefaultAsync(r => r.CallId == call.CallId);
+        if (rec != null) return Ok(rec);
+
+        return NotFound(new { message = "No recording found for this call." });
     }
 }

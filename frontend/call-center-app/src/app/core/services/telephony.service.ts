@@ -252,11 +252,21 @@ export class TelephonyService {
   }
 
   public loadCallHistory() {
+    try {
+      const cached = localStorage.getItem('btcl_call_history');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.callHistory.set(parsed);
+        }
+      }
+    } catch {}
+
     fetch('http://localhost:5000/api/calls/history?limit=100')
       .then(res => res.json())
       .then((data: any[]) => {
-        if (Array.isArray(data)) {
-          this.callHistory.set(data.map(item => ({
+        if (Array.isArray(data) && data.length > 0) {
+          const serverHistory = data.map(item => ({
             id: item.id || item.callUuid,
             callUuid: item.callUuid,
             number: item.number || item.destinationNumber || 'Unknown',
@@ -269,10 +279,18 @@ export class TelephonyService {
             timestamp: item.timestamp || 'Recent',
             disposition: item.disposition || item.status,
             notes: item.notes || ''
-          })));
+          }));
+          this.callHistory.set(serverHistory);
+          this.saveCallHistoryToLocal();
         }
       })
       .catch(err => console.error('Failed to load call history from SQL Server:', err));
+  }
+
+  public saveCallHistoryToLocal() {
+    try {
+      localStorage.setItem('btcl_call_history', JSON.stringify(this.callHistory().slice(0, 100)));
+    } catch {}
   }
 
   private startCallTimer() {
@@ -475,6 +493,7 @@ export class TelephonyService {
       disposition: wasCancelled ? 'Cancelled (Pending Wrap-up)' : 'Pending Wrap-up'
     };
     this.callHistory.update(list => [historyEntry, ...list]);
+    this.saveCallHistoryToLocal();
 
     this.callStatus.set('WrapUp');
     this.agentState.set('WrapUp');
@@ -524,15 +543,78 @@ export class TelephonyService {
   public transferCall(targetExt: string, mode: 'Blind' | 'Attended') {
     const targetAgent = this.agentsList().find(a => a.extension === targetExt);
     const agentName = targetAgent ? targetAgent.name : `Ext ${targetExt}`;
-    
-    // Notify audio and backend
+    const uuid = this.currentCallUuid() || ('call-' + Date.now());
+    const customer = this.currentCustomer();
+    const phone = this.activeCallerNumber() || customer.phone || 'Direct Outbound';
+    const duration = this.activeCallDuration();
+
+    // 1. Audio tone & add customer note
     this.audio.playConnectedChime();
-    
-    // Record transfer in customer notes
-    this.addCustomerNote(`Call transferred to ${agentName} (${targetExt}) via ${mode} transfer.`);
-    
-    // Complete call for current agent
-    this.hangupCall();
+    const transferNote = `Call transferred to ${agentName} (${targetExt}) via ${mode} transfer.`;
+    this.addCustomerNote(transferNote);
+
+    // 2. Persist transfer to SQL Server backend
+    fetch(`http://localhost:5000/api/calls/${uuid}/transfer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        targetExtension: targetExt,
+        transferMode: mode,
+        reason: `Transferred to ${agentName} (${targetExt})`,
+        customerName: customer.name,
+        destinationNumber: phone
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('✓ Call transfer permanently saved to SQL Server:', data);
+        this.saveNotification.set(`✓ Call transferred to ${agentName} (${targetExt}) and saved permanently to SQL Server!`);
+        setTimeout(() => this.saveNotification.set(''), 4500);
+        this.loadCallHistory();
+      })
+      .catch(err => {
+        console.warn('Call transfer server fallback:', err);
+        this.saveNotification.set(`✓ Call transferred to ${agentName} (${targetExt}) locally.`);
+        setTimeout(() => this.saveNotification.set(''), 4000);
+      });
+
+    // 3. Add to Call History permanently
+    const historyEntry: CallHistoryItem = {
+      id: 'h-' + Date.now(),
+      callUuid: uuid,
+      number: phone,
+      customerName: customer.name,
+      direction: 'Transferred',
+      durationSeconds: duration,
+      status: 'Transferred',
+      timestamp: 'Just now',
+      disposition: `TRANSFERRED (${targetExt})`,
+      notes: transferNote
+    };
+    this.callHistory.update(list => [historyEntry, ...list]);
+    this.saveCallHistoryToLocal();
+
+    // 4. Save call recording permanently if recording is active
+    if (this.audioRecorder.isRecording()) {
+      this.audioRecorder.stopMicrophoneRecording(
+        uuid,
+        customer.name,
+        phone,
+        duration
+      );
+    }
+
+    // 5. Reset softphone state
+    if (this.ringTimeout) {
+      clearTimeout(this.ringTimeout);
+      this.ringTimeout = undefined;
+    }
+    this.audio.stopRingback();
+    this.audio.stopHoldMusic();
+    this.callStatus.set('Idle');
+    this.agentState.set('Available');
+    this.activeCallerNumber.set('');
+    this.activeCallDuration.set(0);
   }
 
   public playDtmf(digit: string) {

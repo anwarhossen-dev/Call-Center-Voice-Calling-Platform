@@ -1,4 +1,4 @@
-﻿.supervisor-container {
+.supervisor-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -332,8 +332,55 @@
   border-color: #fed7aa;
   color: #c2410c;
 }
-.btn-barge:hover { background: #ea580c; color: white; }
-
 .font-bold { font-weight: 700; }
 .font-mono { font-family: monospace; }
 .text-muted { color: #94a3b8; }
+
+/* ==========================================================================
+   SUPERVISOR DASHBOARD RESPONSIVENESS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mid-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .supervisor-container {
+    gap: 14px;
+  }
+
+  .coaching-active-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .kpi-card {
+    padding: 12px 14px;
+  }
+
+  .kpi-value {
+    font-size: 24px;
+  }
+
+  .dash-card {
+    padding: 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .queue-table, .agents-table {
+    min-width: 500px;
+  }
+}

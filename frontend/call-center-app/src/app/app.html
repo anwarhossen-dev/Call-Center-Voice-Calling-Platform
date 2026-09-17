@@ -1,161 +1,142 @@
-<div class="app-layout">
-  <!-- Top Global Header -->
-  <header class="app-header">
-    <div class="header-left">
-      <div class="brand-group">
-        <div class="telecom-logo">
-          <div class="logo-shield">
-            <span class="logo-symbol">🌿</span>
+﻿<div class="app-layout">
+  <!-- Fixed Top Navigation (Sticky / Fixed at Top, Won''t Move on Scroll) -->
+  <div class="app-navbar-sticky">
+    <!-- Top Brand & Agent Status Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="telecom-brand" routerLink="/agent" title="BTCL VoiceEngine Core">
+          <div class="brand-icon-shield">
+            <svg class="brand-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              <path d="M14 2a8 8 0 0 1 8 8"/>
+              <path d="M14 6a4 4 0 0 1 4 4"/>
+            </svg>
+            <span class="live-status-glow"></span>
           </div>
-          <div class="logo-text">
-            <div class="brand-row">
+          <div class="brand-copy">
+            <div class="brand-title-row">
               <span class="brand-btcl">BTCL</span>
-              <span class="brand-tag">VoiceEngine</span>
+              <span class="brand-product">VoiceEngine</span>
             </div>
-            <span class="brand-sub">Enterprise Telephony Core</span>
           </div>
         </div>
+      </div>
 
-        <div class="header-divider"></div>
-
-        <!-- System Telemetry Ribbon (Only visible when logged in) -->
+      <!-- Agent Status & User Profile -->
+      <div class="header-right">
         @if (auth.currentUser()) {
-          <div class="telemetry-ribbon">
-            <div class="telemetry-pill">
-              <span class="status-pulse-dot online"></span>
-              <span class="pill-label">BTCL E1 Trunk:</span>
-              <span class="pill-val">Active</span>
+          <div class="agent-control-wrapper">
+            <!-- Status Dropdown Pill -->
+            <div class="smart-status-capsule" [ngClass]="telephony.agentState()">
+              <div class="status-indicator">
+                <span class="status-glow-ring"></span>
+                <span class="status-core-dot"></span>
+              </div>
+              <select class="status-native-select" [value]="telephony.agentState()" (change)="onStatusChange($event)" title="Change Agent Presence State">
+                <option value="Available">Available (Ready)</option>
+                <option value="OnCall">On Call</option>
+                <option value="Break">Break / Lunch</option>
+                <option value="WrapUp">Wrap-Up (ACW)</option>
+                <option value="Offline">Offline</option>
+              </select>
+              <svg class="select-chevron" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+              </svg>
             </div>
-            <div class="telemetry-pill">
-              <span class="status-pulse-dot online"></span>
-              <span class="pill-label">FreeSWITCH ESL:</span>
-              <span class="pill-val">8021 Live</span>
+
+            <!-- User Profile Widget -->
+            <div class="user-profile-badge">
+              <div class="avatar-ring" [ngClass]="auth.currentUser()?.role?.toLowerCase() || 'agent'">
+                <span class="avatar-initials">{{ userInitials() }}</span>
+                @if (auth.currentUser()?.extension) {
+                  <span class="ext-bubble" title="Agent SIP Extension">#{{ auth.currentUser()?.extension }}</span>
+                }
+              </div>
+              <div class="user-meta">
+                <span class="user-display-name">{{ auth.userDisplayName() }}</span>
+                <span class="user-role-tag">{{ auth.userRole() }}</span>
+              </div>
             </div>
-            <div class="telemetry-pill">
-              <span class="status-pulse-dot online"></span>
-              <span class="pill-label">SignalR:</span>
-              <span class="pill-val">WebSocket</span>
-            </div>
-            <div class="telemetry-pill hide-sm">
-              <span class="pill-label">Codec:</span>
-              <span class="pill-val">G.711u / Opus</span>
-            </div>
+
+            <!-- Logout Button -->
+            <button class="btn-smart-logout" (click)="auth.logout()" title="Sign Out">
+              <svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              <span class="logout-text">Logout</span>
+            </button>
+          </div>
+        } @else {
+          <div class="auth-header-actions">
+            <a routerLink="/login" class="btn-login-nav">Sign In</a>
+            <a routerLink="/register" class="btn-register-nav">Register</a>
           </div>
         }
       </div>
-    </div>
+    </header>
 
-    <!-- Agent Identity & Global Controls -->
-    <div class="header-right">
-      @if (auth.currentUser()) {
-        <button class="btn-info-toggle" (click)="toggleCapabilities()" title="System Architecture & Capabilities">
-          <span class="btn-icon">⚡</span>
-          <span class="btn-text">Architecture Info</span>
-        </button>
+    <!-- Navigation Bar (Clean Tabs Only) -->
+    @if (auth.currentUser()) {
+      <nav class="portal-nav-bar">
+        <div class="nav-container">
+          <div class="tabs-group">
+            <a class="nav-tab" routerLink="/agent" routerLinkActive="active">
+              <svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+              <span class="tab-title">Agent Workspace</span>
+            </a>
 
-        <button class="btn-test-inbound" (click)="telephony.simulateInboundCall()" title="Simulate incoming customer call">
-          <span class="btn-icon">📥</span>
-          <span class="btn-text">Test Inbound Call</span>
-        </button>
+            <a class="nav-tab" routerLink="/history" routerLinkActive="active">
+              <svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span class="tab-title">Call History</span>
+            </a>
 
-        <div class="header-divider"></div>
+            <a class="nav-tab" routerLink="/supervisor" routerLinkActive="active">
+              <svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+              <span class="tab-title">Supervisor Dashboard</span>
+            </a>
 
-        <div class="agent-profile-box">
-          <div class="agent-avatar-badge">
-            <span>{{ auth.currentUser()?.role === 'Admin' ? '🔑' : (auth.currentUser()?.role === 'Supervisor' ? '👔' : '🎧') }}</span>
-            @if (auth.currentUser()?.extension) {
-              <span class="agent-ext-tag">{{ auth.currentUser()?.extension }}</span>
-            }
+            <a class="nav-tab" routerLink="/recordings" routerLinkActive="active">
+              <svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+              </svg>
+              <span class="tab-title">Call Recordings</span>
+            </a>
+
+            <a class="nav-tab" routerLink="/admin" routerLinkActive="active">
+              <svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              <span class="tab-title">Admin &amp; Campaigns</span>
+            </a>
+
+            <a class="nav-tab" routerLink="/tables" routerLinkActive="active">
+              <svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+              <span class="tab-title">Database Tables</span>
+            </a>
           </div>
-          <div class="agent-details">
-            <span class="agent-name">{{ auth.userDisplayName() }}</span>
-            <span class="agent-role">{{ auth.userRole() }}</span>
-          </div>
         </div>
-
-        <!-- Agent State Dropdown with Color Pill -->
-        <div class="status-selector-box" [ngClass]="telephony.agentState()">
-          <span class="status-dot"></span>
-          <select class="status-select" [value]="telephony.agentState()" (change)="onStatusChange($event)">
-            <option value="Available">Available (Ready)</option>
-            <option value="OnCall">On Call</option>
-            <option value="Break">Break / Lunch</option>
-            <option value="WrapUp">Wrap-Up (ACW)</option>
-            <option value="Offline">Offline</option>
-          </select>
-        </div>
-
-        <button class="btn-logout" (click)="auth.logout()" title="Sign Out">
-          <span class="btn-icon">🚪</span>
-          <span class="btn-text">Logout</span>
-        </button>
-      } @else {
-        <div class="auth-header-actions">
-          <a routerLink="/login" class="btn-login-nav">
-            <span>🔐</span>
-            <span>Sign In</span>
-          </a>
-          <a routerLink="/register" class="btn-register-nav">
-            <span>✨</span>
-            <span>Register</span>
-          </a>
-        </div>
-      }
-    </div>
-  </header>
-
-  <!-- Navigation Bar (Only visible when user is logged in) -->
-  @if (auth.currentUser()) {
-    <nav class="portal-nav-bar">
-      <div class="nav-container">
-        <div class="tabs-group">
-          <a class="nav-tab" routerLink="/agent" routerLinkActive="active">
-            <span class="tab-icon">👤</span>
-            <span class="tab-title">Agent Workspace &amp; Softphone</span>
-            @if (telephony.callStatus() === 'Connected') {
-              <span class="tab-badge live">In Call</span>
-            } @else if (telephony.callStatus() === 'Ringing') {
-              <span class="tab-badge ringing">Ringing</span>
-            }
-          </a>
-
-          <a class="nav-tab" routerLink="/history" routerLinkActive="active">
-            <span class="tab-icon">📋</span>
-            <span class="tab-title">Call History &amp; Logs</span>
-            <span class="tab-badge">{{ telephony.callHistory().length }} Calls</span>
-          </a>
-
-          <a class="nav-tab" routerLink="/supervisor" routerLinkActive="active">
-            <span class="tab-icon">📊</span>
-            <span class="tab-title">Supervisor Dashboard &amp; Coaching</span>
-            @if (telephony.coachingSession()?.active) {
-              <span class="tab-badge coaching">Spying Live</span>
-            }
-          </a>
-
-          <a class="nav-tab" routerLink="/recordings" routerLinkActive="active">
-            <span class="tab-icon">🎙️</span>
-            <span class="tab-title">Call Recordings Archive</span>
-            <span class="tab-badge recordings-badge">{{ telephony.audioRecorder.recordedCalls().length }} Calls</span>
-          </a>
-
-          <a class="nav-tab" routerLink="/admin" routerLinkActive="active">
-            <span class="tab-icon">⚙</span>
-            <span class="tab-title">Admin Panel &amp; Campaigns</span>
-            <span class="tab-badge">{{ telephony.campaigns().length }} Campaigns</span>
-          </a>
-        </div>
-
-        <div class="nav-right-meta">
-          <span class="tech-tag">.NET 8 WebApi</span>
-          <span class="tech-sep">•</span>
-          <span class="tech-tag">Angular 18 Standalone</span>
-          <span class="tech-sep">•</span>
-          <span class="tech-tag">FreeSWITCH WebRTC</span>
-        </div>
-      </div>
-    </nav>
-  }
+      </nav>
+    }
+  </div>
 
   <!-- Main View Workspace (Full Width Routed Page) -->
   <main class="main-body">
@@ -163,64 +144,4 @@
       <router-outlet></router-outlet>
     </div>
   </main>
-
-  <!-- Architecture & Capabilities Modal Drawer -->
-  @if (showCapabilitiesModal()) {
-    <div class="modal-backdrop" (click)="toggleCapabilities()">
-      <div class="modal-card" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <div class="modal-title-row">
-            <span class="modal-icon">🏛</span>
-            <div>
-              <h3 class="modal-title">Platform Architecture & Capabilities</h3>
-              <div class="modal-sub">Enterprise Telecom Voice Calling Platform Specification</div>
-            </div>
-          </div>
-          <button class="btn-close" (click)="toggleCapabilities()">✕</button>
-        </div>
-
-        <div class="modal-body">
-          <div class="specs-grid">
-            <div class="spec-card">
-              <h4>Voice & Telephony Stack</h4>
-              <ul>
-                <li><strong>SIP Trunk:</strong> BTCL Dedicated E1 Gateway (SIP Trunking)</li>
-                <li><strong>Media Server:</strong> FreeSWITCH 1.10 WebRTC ESL Bridge</li>
-                <li><strong>Audio Codecs:</strong> G.711u/a, Opus 48kHz High-Fidelity</li>
-                <li><strong>Dual-Channel Recording:</strong> Stereo MP3/WAV Separation</li>
-              </ul>
-            </div>
-
-            <div class="spec-card">
-              <h4>Application & Real-time Layer</h4>
-              <ul>
-                <li><strong>Backend:</strong> ASP.NET Core 8 WebApi (Clean Architecture)</li>
-                <li><strong>Realtime:</strong> SignalR WebSockets (Screen-Pop & Coaching)</li>
-                <li><strong>Frontend:</strong> Angular 18 Reactive Signals & Web Audio API</li>
-                <li><strong>Routing:</strong> ACD Queue Algorithm (Skill & Longest Idle)</li>
-              </ul>
-            </div>
-          </div>
-
-          <h4 class="mt-4 mb-2 font-bold">10 Core Capabilities Checklist</h4>
-          <div class="checklist-grid">
-            <div class="chk-item"><span class="chk-icon">✓</span> Inbound & Outbound Direct Calling</div>
-            <div class="chk-item"><span class="chk-icon">✓</span> Realtime Agent State Management</div>
-            <div class="chk-item"><span class="chk-icon">✓</span> ACD Queue & Skill-based Routing</div>
-            <div class="chk-item"><span class="chk-icon">✓</span> Stereo Call Recording Storage</div>
-            <div class="chk-item"><span class="chk-icon">✓</span> Customer CRM Lookup & Screen-Pop</div>
-            <div class="chk-item"><span class="chk-icon">✓</span> Supervisor Silent Spy, Whisper & Barge</div>
-            <div class="chk-item"><span class="chk-icon">✓</span> Campaign Management & Dialer Modes</div>
-            <div class="chk-item"><span class="chk-icon">✓</span> Wrap-up Dispositions & Notes Sync</div>
-            <div class="chk-item"><span class="chk-icon">✓</span> 500+ Concurrent Agent Scalability</div>
-            <div class="chk-item highlight"><span class="chk-icon">✓</span> AI Audio Hooks & Realtime Transcripts</div>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button class="btn-modal-close" (click)="toggleCapabilities()">Close</button>
-        </div>
-      </div>
-    </div>
-  }
 </div>

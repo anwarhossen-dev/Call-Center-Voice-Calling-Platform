@@ -15,3 +15,4 @@ D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCente
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\refint\CallCenter.Persistence.dll
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.pdb
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\ref\CallCenter.Persistence.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Persistence\obj\Debug\net8.0\CallCenter.Persistence.sourcelink.json

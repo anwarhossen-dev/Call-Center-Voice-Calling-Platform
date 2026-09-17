@@ -9,3 +9,4 @@ D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\o
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\refint\CallCenter.Domain.dll
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\CallCenter.Domain.pdb
 d:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\ref\CallCenter.Domain.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Core\CallCenter.Domain\obj\Debug\net8.0\CallCenter.Domain.sourcelink.json

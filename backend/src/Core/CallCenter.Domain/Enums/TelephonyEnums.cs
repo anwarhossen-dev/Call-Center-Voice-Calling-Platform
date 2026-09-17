@@ -9,7 +9,8 @@ public enum AgentState
     WrapUp = 4, // ACW (After Call Work)
     Break = 5,
     Lunch = 6,
-    Training = 7
+    Training = 7,
+    Busy = 8
 }
 
 public enum CallDirection
@@ -27,7 +28,10 @@ public enum CallStatus
     Completed = 4,
     Abandoned = 5,
     Busy = 6,
-    Failed = 7
+    Failed = 7,
+    Transferred = 8,
+    Queued = 9,
+    InProgress = 10
 }
 
 public enum SupervisorInterventionMode

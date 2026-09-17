@@ -74,6 +74,37 @@ export class HistoryPageComponent implements OnInit {
     });
   }
 
+  pageSize = signal<number>(10);
+  currentPage = signal<number>(1);
+
+  totalPages(): number {
+    return Math.ceil(this.filteredCalls().length / this.pageSize()) || 1;
+  }
+
+  paginatedCalls(): CallHistoryItem[] {
+    const list = this.filteredCalls();
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return list.slice(start, start + this.pageSize());
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
+    }
+  }
+
+  setPage(p: number) {
+    if (p >= 1 && p <= this.totalPages()) {
+      this.currentPage.set(p);
+    }
+  }
+
   getCompletedCount(): number {
     return this.telephony.callHistory().filter(c => c.status === 'Completed' || (c.disposition && c.disposition !== 'CANCELLED')).length;
   }

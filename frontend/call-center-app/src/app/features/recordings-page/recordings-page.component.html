@@ -8,18 +8,22 @@
       </div>
       <h1 class="main-page-title">Voice Call Recordings Archive</h1>
       <p class="page-subtitle">
-        ব্রাউজার মাইক্রোফোনের আসল ভয়েস এবং BTCL SIP ট্রাঙ্কের ডুয়েল-ট্র্যাক (Stereo 16kHz) কল রেকর্ডিংস লাইব্রেরি।
+        Browser microphone live audio and BTCL SIP Trunk dual-track (Stereo 16kHz) call recordings library.
       </p>
     </div>
 
     <div class="header-stats-chips">
+      <button class="btn-sync-db" (click)="refreshRecordings()" [disabled]="isRefreshing()" title="Fetch latest recordings from SQL Server">
+        <span class="refresh-icon" [class.spinning]="isRefreshing()">🔄</span>
+        <span>{{ isRefreshing() ? 'Syncing...' : 'Sync with SQL Server' }}</span>
+      </button>
       <div class="stat-box">
         <span class="sb-val">{{ audioRecorder.recordedCalls().length }}</span>
-        <span class="sb-label">Total Recordings</span>
+        <span class="sb-label">Total in Database</span>
       </div>
       <div class="stat-box">
-        <span class="sb-val online">100%</span>
-        <span class="sb-label">Audio Quality</span>
+        <span class="sb-val online">SQL Server</span>
+        <span class="sb-label">CallRecordings Table</span>
       </div>
     </div>
   </div>
@@ -31,7 +35,7 @@
       <input
         type="text"
         class="search-input"
-        placeholder="গ্রাহকের নাম, মোবাইল নম্বর বা Call UUID দিয়ে খুঁজুন..."
+        placeholder="Search by customer name, phone number or Call UUID..."
         [ngModel]="searchQuery()"
         (ngModelChange)="searchQuery.set($event)"
       />
@@ -78,16 +82,16 @@
       <thead>
         <tr>
           <th>Call UUID</th>
-          <th>গ্রাহক ও ফোন নম্বর</th>
-          <th>স্থায়িত্বকাল (Duration)</th>
-          <th>রেকর্ড করার সময়</th>
-          <th>চ্যানেল / কোডেক</th>
-          <th>প্লেব্যাক কন্ট্রোল</th>
-          <th>অ্যাকশন</th>
+          <th>Customer &amp; Phone</th>
+          <th>Duration</th>
+          <th>Recorded Time</th>
+          <th>Channel / Codec</th>
+          <th>Playback Control</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        @for (rec of filteredRecordings(); track rec.id) {
+        @for (rec of paginatedRecordings(); track rec.id) {
           <tr [class.is-playing-row]="audioRecorder.activePlayingId() === rec.id">
             <td class="col-uuid">
               <span class="uuid-pill font-mono">{{ rec.callUuid }}</span>
@@ -146,13 +150,31 @@
             <td colspan="7" class="empty-state-cell">
               <div class="empty-state-box">
                 <span class="empty-icon">📂</span>
-                <h3>কোনো রেকর্ডিং পাওয়া যায়নি</h3>
-                <p>এখনই এজেন্ট পোর্টাল থেকে একটি কল করে কথা বললে স্বয়ংক্রিয়ভাবে এখানে ভয়েস ফাইল চলে আসবে।</p>
+                <h3>No Recordings Found</h3>
+                <p>Initiate a call from the Agent Portal to automatically record and view audio files here.</p>
               </div>
             </td>
           </tr>
         }
       </tbody>
     </table>
+
+    <!-- Pagination Controls -->
+    @if (filteredRecordings().length > pageSize()) {
+      <div class="pagination-bar">
+        <div class="pagination-info">
+          Showing page <strong>{{ currentPage() }}</strong> of <strong>{{ totalPages() }}</strong> ({{ filteredRecordings().length }} total recordings)
+        </div>
+        <div class="pagination-controls">
+          <button class="btn-page-nav" (click)="prevPage()" [disabled]="currentPage() === 1">
+            ‹ Previous
+          </button>
+          <span class="page-indicator">{{ currentPage() }} / {{ totalPages() }}</span>
+          <button class="btn-page-nav" (click)="nextPage()" [disabled]="currentPage() === totalPages()">
+            Next ›
+          </button>
+        </div>
+      </div>
+    }
   </div>
 </div>

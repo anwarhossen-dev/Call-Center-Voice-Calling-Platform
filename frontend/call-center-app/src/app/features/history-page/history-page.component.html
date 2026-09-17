@@ -130,7 +130,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (c of filteredCalls(); track c.id) {
+          @for (c of paginatedCalls(); track c.id) {
             <tr class="history-row">
               <td>
                 <span class="direction-badge" [ngClass]="c.direction">
@@ -175,6 +175,24 @@
           }
         </tbody>
       </table>
+
+      <!-- Pagination Controls -->
+      @if (filteredCalls().length > pageSize()) {
+        <div class="pagination-bar">
+          <div class="pagination-info">
+            Showing page <strong>{{ currentPage() }}</strong> of <strong>{{ totalPages() }}</strong> ({{ filteredCalls().length }} total calls)
+          </div>
+          <div class="pagination-controls">
+            <button class="btn-page-nav" (click)="prevPage()" [disabled]="currentPage() === 1">
+              ‹ Previous
+            </button>
+            <span class="page-indicator">{{ currentPage() }} / {{ totalPages() }}</span>
+            <button class="btn-page-nav" (click)="nextPage()" [disabled]="currentPage() === totalPages()">
+              Next ›
+            </button>
+          </div>
+        </div>
+      }
     }
   </div>
 </div>

@@ -21,22 +21,68 @@ public class CallCenterDbContext : DbContext
     public DbSet<Disposition> Dispositions => Set<Disposition>();
     public DbSet<Campaign> Campaigns => Set<Campaign>();
 
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<Team> Teams => Set<Team>();
+    public DbSet<AgentStatusHistory> AgentStatusHistories => Set<AgentStatusHistory>();
+    public DbSet<PerformanceMetric> PerformanceMetrics => Set<PerformanceMetric>();
+    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<CallEvent> CallEvents => Set<CallEvent>();
+    public DbSet<CRMActivity> CRMActivities => Set<CRMActivity>();
+    public DbSet<CustomerCRMMapping> CustomerCRMMappings => Set<CustomerCRMMapping>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
+    public DbSet<QAScorecard> QAScorecards => Set<QAScorecard>();
+    public DbSet<QAReview> QAReviews => Set<QAReview>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         // Explicit Primary Keys
         modelBuilder.Entity<Role>().HasKey(r => r.RoleId);
+        modelBuilder.Entity<UserRole>().HasKey(ur => ur.Id);
         modelBuilder.Entity<User>().HasKey(u => u.UserId);
+        modelBuilder.Entity<Team>().HasKey(t => t.TeamId);
         modelBuilder.Entity<Agent>().HasKey(a => a.AgentId);
+        modelBuilder.Entity<AgentStatusHistory>().HasKey(h => h.Id);
         modelBuilder.Entity<AgentStateLog>().HasKey(l => l.Id);
+        modelBuilder.Entity<PerformanceMetric>().HasKey(pm => pm.MetricId);
         modelBuilder.Entity<Queue>().HasKey(q => q.QueueId);
         modelBuilder.Entity<AgentQueue>().HasKey(aq => new { aq.AgentId, aq.QueueId });
+        modelBuilder.Entity<Campaign>().HasKey(c => c.CampaignId);
+        modelBuilder.Entity<Disposition>().HasKey(d => d.DispositionId);
+        modelBuilder.Entity<Customer>().HasKey(c => c.CustomerId);
         modelBuilder.Entity<Call>().HasKey(c => c.CallId);
+        modelBuilder.Entity<CallEvent>().HasKey(ce => ce.EventId);
         modelBuilder.Entity<CallSession>().HasKey(s => s.SessionId);
         modelBuilder.Entity<CallRecording>().HasKey(r => r.RecordingId);
-        modelBuilder.Entity<Disposition>().HasKey(d => d.DispositionId);
-        modelBuilder.Entity<Campaign>().HasKey(c => c.CampaignId);
+        modelBuilder.Entity<CRMActivity>().HasKey(ca => ca.ActivityId);
+        modelBuilder.Entity<CustomerCRMMapping>().HasKey(m => m.MappingId);
+        modelBuilder.Entity<AuditLog>().HasKey(al => al.LogId);
+        modelBuilder.Entity<SystemSetting>().HasKey(ss => ss.SettingId);
+        modelBuilder.Entity<QAScorecard>().HasKey(sc => sc.ScorecardId);
+        modelBuilder.Entity<QAReview>().HasKey(qr => qr.ReviewId);
+
+        // Precision configurations
+        modelBuilder.Entity<PerformanceMetric>()
+            .Property(p => p.Occupancy)
+            .HasPrecision(5, 2);
+
+        modelBuilder.Entity<QAReview>()
+            .Property(q => q.Score)
+            .HasPrecision(5, 2);
+
+        // Prevent cycle / multiple cascade paths in SQL Server
+        foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+        {
+            relationship.DeleteBehavior = DeleteBehavior.Restrict;
+        }
+
+        // Indexes for high performance lookup
+        modelBuilder.Entity<Customer>().HasIndex(c => c.Phone);
+        modelBuilder.Entity<Customer>().HasIndex(c => c.Email);
+        modelBuilder.Entity<SystemSetting>().HasIndex(s => s.SettingKey).IsUnique();
+        modelBuilder.Entity<AuditLog>().HasIndex(al => al.CreatedAt);
 
         // Unique indexes
         modelBuilder.Entity<User>()

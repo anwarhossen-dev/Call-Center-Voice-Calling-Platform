@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "RWOZD9tZbkY=",
+  "dgSpecHash": "lOYn1YznjeU=",
   "success": true,
   "projectFilePath": "D:\\Anwar\\Call Center Voice Calling Platform\\backend\\src\\Presentation\\CallCenter.WebApi\\CallCenter.WebApi.csproj",
   "expectedPackageFiles": [
@@ -91,7 +91,11 @@
     "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
     "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512",
     "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.31\\microsoft.netcore.app.ref.8.0.31.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.31\\microsoft.windowsdesktop.app.ref.8.0.31.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.31\\microsoft.aspnetcore.app.ref.8.0.31.nupkg.sha512",
+    "C:\\Users\\MD.Anwar hossen\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.31\\microsoft.netcore.app.host.win-x64.8.0.31.nupkg.sha512"
   ],
   "logs": []
 }

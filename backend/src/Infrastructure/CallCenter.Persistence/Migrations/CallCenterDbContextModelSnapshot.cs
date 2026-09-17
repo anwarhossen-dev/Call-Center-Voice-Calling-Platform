@@ -28,6 +28,11 @@ namespace CallCenter.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AgentCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -44,8 +49,22 @@ namespace CallCenter.Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<DateTime?>("HireDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<DateTimeOffset>("StateChangedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid?>("TeamId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -54,6 +73,8 @@ namespace CallCenter.Persistence.Migrations
 
                     b.HasIndex("Extension")
                         .IsUnique();
+
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -113,6 +134,109 @@ namespace CallCenter.Persistence.Migrations
                     b.ToTable("AgentStateLogs");
                 });
 
+            modelBuilder.Entity("CallCenter.Domain.Entities.AgentStatusHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AgentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("EndTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("StartTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgentId");
+
+                    b.ToTable("AgentStatusHistories");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.AuditLog", b =>
+                {
+                    b.Property<Guid>("LogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Entity")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("EntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("IPAddress")
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
+
+                    b.Property<string>("NewValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LogId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AuditLogs");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.CRMActivity", b =>
+                {
+                    b.Property<Guid>("ActivityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ActivityType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("CallId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ActivityId");
+
+                    b.HasIndex("CallId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CRMActivities");
+                });
+
             modelBuilder.Entity("CallCenter.Domain.Entities.Call", b =>
                 {
                     b.Property<Guid>("CallId")
@@ -140,8 +264,17 @@ namespace CallCenter.Persistence.Migrations
 
                     b.Property<string>("CallerNumber")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid?>("CampaignId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("DestinationNumber")
                         .IsRequired()
@@ -153,6 +286,12 @@ namespace CallCenter.Persistence.Migrations
 
                     b.Property<Guid?>("DispositionId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("EndTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("EndedAt")
                         .HasColumnType("datetimeoffset");
@@ -166,14 +305,27 @@ namespace CallCenter.Persistence.Migrations
                     b.Property<Guid?>("QueueId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset>("StartTime")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("StatusText")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("TalkDurationSeconds")
                         .HasColumnType("int");
 
                     b.Property<int>("TotalDurationSeconds")
                         .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("WaitDurationSeconds")
                         .HasColumnType("int");
@@ -187,6 +339,10 @@ namespace CallCenter.Persistence.Migrations
 
                     b.HasIndex("CallerNumber");
 
+                    b.HasIndex("CampaignId");
+
+                    b.HasIndex("CustomerId");
+
                     b.HasIndex("DispositionId");
 
                     b.HasIndex("QueueId");
@@ -194,6 +350,37 @@ namespace CallCenter.Persistence.Migrations
                     b.HasIndex("InitiatedAt", "Status");
 
                     b.ToTable("Calls");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.CallEvent", b =>
+                {
+                    b.Property<Guid>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CallId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTimeOffset>("EventTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("EventId");
+
+                    b.HasIndex("CallId");
+
+                    b.ToTable("CallEvents");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.CallRecording", b =>
@@ -210,6 +397,12 @@ namespace CallCenter.Persistence.Migrations
                     b.Property<Guid>("CallId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
                     b.Property<int>("DurationSeconds")
                         .HasColumnType("int");
 
@@ -217,6 +410,19 @@ namespace CallCenter.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("FileSizeBytes")
                         .HasColumnType("bigint");
@@ -236,6 +442,11 @@ namespace CallCenter.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("StorageUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("RecordingId");
 
@@ -287,13 +498,24 @@ namespace CallCenter.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CampaignName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<DateTimeOffset?>("EndDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("datetimeoffset");
@@ -313,6 +535,77 @@ namespace CallCenter.Persistence.Migrations
                     b.ToTable("Campaigns");
                 });
 
+            modelBuilder.Entity("CallCenter.Domain.Entities.Customer", b =>
+                {
+                    b.Property<Guid>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CRMId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("CustomerId");
+
+                    b.HasIndex("Email");
+
+                    b.HasIndex("Phone");
+
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.CustomerCRMMapping", b =>
+                {
+                    b.Property<Guid>("MappingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CRMId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ExternalCustomerId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("LastSyncAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("MappingId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CustomerCRMMappings");
+                });
+
             modelBuilder.Entity("CallCenter.Domain.Entities.Disposition", b =>
                 {
                     b.Property<Guid>("DispositionId")
@@ -326,13 +619,17 @@ namespace CallCenter.Persistence.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("DispositionName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -351,6 +648,7 @@ namespace CallCenter.Persistence.Migrations
                             Category = "Support",
                             Code = "RESOLVED",
                             Description = "Query Resolved on Call",
+                            DispositionName = "RESOLVED",
                             IsActive = true,
                             RequiresFollowup = false
                         },
@@ -360,6 +658,7 @@ namespace CallCenter.Persistence.Migrations
                             Category = "Support",
                             Code = "ESCALATED",
                             Description = "Issue Escalated to Tier 2",
+                            DispositionName = "ESCALATED",
                             IsActive = true,
                             RequiresFollowup = true
                         },
@@ -369,6 +668,7 @@ namespace CallCenter.Persistence.Migrations
                             Category = "General",
                             Code = "CALLBACK_REQ",
                             Description = "Customer Requested Callback",
+                            DispositionName = "CALLBACK_REQ",
                             IsActive = true,
                             RequiresFollowup = true
                         },
@@ -378,6 +678,7 @@ namespace CallCenter.Persistence.Migrations
                             Category = "Sales",
                             Code = "INTERESTED",
                             Description = "Prospect Interested in Offer",
+                            DispositionName = "INTERESTED",
                             IsActive = true,
                             RequiresFollowup = false
                         },
@@ -387,9 +688,113 @@ namespace CallCenter.Persistence.Migrations
                             Category = "Sales",
                             Code = "NOT_INTERESTED",
                             Description = "Prospect Declined Offer",
+                            DispositionName = "NOT_INTERESTED",
                             IsActive = true,
                             RequiresFollowup = false
                         });
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.PerformanceMetric", b =>
+                {
+                    b.Property<Guid>("MetricId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AgentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AnsweredCalls")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AvgTalkTime")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MissedCalls")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Occupancy")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<int>("TotalCalls")
+                        .HasColumnType("int");
+
+                    b.HasKey("MetricId");
+
+                    b.HasIndex("AgentId");
+
+                    b.ToTable("PerformanceMetrics");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.QAReview", b =>
+                {
+                    b.Property<Guid>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AgentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CallId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Feedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ReviewerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Score")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<Guid?>("ScorecardId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("AgentId");
+
+                    b.HasIndex("CallId");
+
+                    b.HasIndex("ScorecardId");
+
+                    b.ToTable("QAReviews");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.QAScorecard", b =>
+                {
+                    b.Property<Guid>("ScorecardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CriteriaJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("PassThreshold")
+                        .HasColumnType("int");
+
+                    b.HasKey("ScorecardId");
+
+                    b.ToTable("QAScorecards");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.Queue", b =>
@@ -398,10 +803,17 @@ namespace CallCenter.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("MaxWaitTimeoutSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Priority")
                         .HasColumnType("int");
 
                     b.Property<string>("QueueName")
@@ -428,9 +840,15 @@ namespace CallCenter.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Description")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("RoleName")
                         .IsRequired()
@@ -445,21 +863,88 @@ namespace CallCenter.Persistence.Migrations
                         new
                         {
                             RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2026, 9, 16, 19, 9, 21, 624, DateTimeKind.Unspecified).AddTicks(5983), new TimeSpan(0, 0, 0, 0, 0)),
                             Description = "System Administrator",
+                            IsActive = true,
                             RoleName = "Admin"
                         },
                         new
                         {
                             RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2026, 9, 16, 19, 9, 21, 624, DateTimeKind.Unspecified).AddTicks(5998), new TimeSpan(0, 0, 0, 0, 0)),
                             Description = "Call Center Team Lead / Supervisor",
+                            IsActive = true,
                             RoleName = "Supervisor"
                         },
                         new
                         {
                             RoleId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2026, 9, 16, 19, 9, 21, 624, DateTimeKind.Unspecified).AddTicks(6001), new TimeSpan(0, 0, 0, 0, 0)),
                             Description = "Contact Center Agent",
+                            IsActive = true,
                             RoleName = "Agent"
                         });
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.SystemSetting", b =>
+                {
+                    b.Property<Guid>("SettingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("SettingKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("SettingValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("SettingId");
+
+                    b.HasIndex("SettingKey")
+                        .IsUnique();
+
+                    b.ToTable("SystemSettings");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.Team", b =>
+                {
+                    b.Property<Guid>("TeamId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ManagerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TeamName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("TeamId");
+
+                    b.HasIndex("ManagerId");
+
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.User", b =>
@@ -476,13 +961,25 @@ namespace CallCenter.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LastLoginAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("nvarchar(512)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
@@ -505,13 +1002,44 @@ namespace CallCenter.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("CallCenter.Domain.Entities.UserRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserRoles");
+                });
+
             modelBuilder.Entity("CallCenter.Domain.Entities.Agent", b =>
                 {
+                    b.HasOne("CallCenter.Domain.Entities.Team", "Team")
+                        .WithMany("Agents")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("CallCenter.Domain.Entities.User", "User")
                         .WithOne("AgentProfile")
                         .HasForeignKey("CallCenter.Domain.Entities.Agent", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Team");
 
                     b.Navigation("User");
                 });
@@ -521,13 +1049,13 @@ namespace CallCenter.Persistence.Migrations
                     b.HasOne("CallCenter.Domain.Entities.Agent", "Agent")
                         .WithMany("AgentQueues")
                         .HasForeignKey("AgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("CallCenter.Domain.Entities.Queue", "Queue")
                         .WithMany("AgentQueues")
                         .HasForeignKey("QueueId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Agent");
@@ -540,31 +1068,98 @@ namespace CallCenter.Persistence.Migrations
                     b.HasOne("CallCenter.Domain.Entities.Agent", "Agent")
                         .WithMany("StateLogs")
                         .HasForeignKey("AgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Agent");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.AgentStatusHistory", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.Agent", "Agent")
+                        .WithMany("StatusHistories")
+                        .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Agent");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.AuditLog", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.User", "User")
+                        .WithMany("AuditLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.CRMActivity", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.Call", "Call")
+                        .WithMany("CRMActivities")
+                        .HasForeignKey("CallId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("CallCenter.Domain.Entities.Customer", "Customer")
+                        .WithMany("CRMActivities")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Call");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.Call", b =>
                 {
                     b.HasOne("CallCenter.Domain.Entities.Agent", "Agent")
                         .WithMany("HandledCalls")
-                        .HasForeignKey("AgentId");
+                        .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("CallCenter.Domain.Entities.Campaign", "Campaign")
+                        .WithMany("Calls")
+                        .HasForeignKey("CampaignId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("CallCenter.Domain.Entities.Customer", "Customer")
+                        .WithMany("Calls")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("CallCenter.Domain.Entities.Disposition", "Disposition")
                         .WithMany()
-                        .HasForeignKey("DispositionId");
+                        .HasForeignKey("DispositionId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("CallCenter.Domain.Entities.Queue", "Queue")
                         .WithMany("Calls")
-                        .HasForeignKey("QueueId");
+                        .HasForeignKey("QueueId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Agent");
+
+                    b.Navigation("Campaign");
+
+                    b.Navigation("Customer");
 
                     b.Navigation("Disposition");
 
                     b.Navigation("Queue");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.CallEvent", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.Call", "Call")
+                        .WithMany("Events")
+                        .HasForeignKey("CallId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Call");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.CallRecording", b =>
@@ -572,7 +1167,7 @@ namespace CallCenter.Persistence.Migrations
                     b.HasOne("CallCenter.Domain.Entities.Call", "Call")
                         .WithOne("Recording")
                         .HasForeignKey("CallCenter.Domain.Entities.CallRecording", "CallId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Call");
@@ -583,10 +1178,68 @@ namespace CallCenter.Persistence.Migrations
                     b.HasOne("CallCenter.Domain.Entities.Call", "Call")
                         .WithMany("Sessions")
                         .HasForeignKey("CallId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Call");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.CustomerCRMMapping", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.Customer", "Customer")
+                        .WithMany("Mappings")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.PerformanceMetric", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.Agent", "Agent")
+                        .WithMany("PerformanceMetrics")
+                        .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Agent");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.QAReview", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.Agent", "Agent")
+                        .WithMany()
+                        .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CallCenter.Domain.Entities.Call", "Call")
+                        .WithMany()
+                        .HasForeignKey("CallId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CallCenter.Domain.Entities.QAScorecard", "Scorecard")
+                        .WithMany()
+                        .HasForeignKey("ScorecardId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Agent");
+
+                    b.Navigation("Call");
+
+                    b.Navigation("Scorecard");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.Team", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.User", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.User", b =>
@@ -594,10 +1247,29 @@ namespace CallCenter.Persistence.Migrations
                     b.HasOne("CallCenter.Domain.Entities.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.UserRole", b =>
+                {
+                    b.HasOne("CallCenter.Domain.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CallCenter.Domain.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.Agent", b =>
@@ -606,14 +1278,36 @@ namespace CallCenter.Persistence.Migrations
 
                     b.Navigation("HandledCalls");
 
+                    b.Navigation("PerformanceMetrics");
+
                     b.Navigation("StateLogs");
+
+                    b.Navigation("StatusHistories");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.Call", b =>
                 {
+                    b.Navigation("CRMActivities");
+
+                    b.Navigation("Events");
+
                     b.Navigation("Recording");
 
                     b.Navigation("Sessions");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.Campaign", b =>
+                {
+                    b.Navigation("Calls");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.Customer", b =>
+                {
+                    b.Navigation("CRMActivities");
+
+                    b.Navigation("Calls");
+
+                    b.Navigation("Mappings");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.Queue", b =>
@@ -625,12 +1319,23 @@ namespace CallCenter.Persistence.Migrations
 
             modelBuilder.Entity("CallCenter.Domain.Entities.Role", b =>
                 {
+                    b.Navigation("UserRoles");
+
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("CallCenter.Domain.Entities.Team", b =>
+                {
+                    b.Navigation("Agents");
                 });
 
             modelBuilder.Entity("CallCenter.Domain.Entities.User", b =>
                 {
                     b.Navigation("AgentProfile");
+
+                    b.Navigation("AuditLogs");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

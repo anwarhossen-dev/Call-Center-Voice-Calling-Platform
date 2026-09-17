@@ -1,0 +1,313 @@
+<div class="tables-portal-container">
+  <!-- Top Stat Bar & Breadcrumb -->
+  <div class="portal-header">
+    <div class="header-main">
+      <div class="header-badge">
+        <span class="pulse-dot"></span>
+        <span>ENTERPRISE DATABASE SCHEMA (18 TABLES)</span>
+      </div>
+      <h1 class="portal-title">Database Tables Explorer</h1>
+      <p class="portal-subtitle">
+        Direct live view of all 18 tables defined in the Microsoft SQL Server Architecture ERD. Query, filter, and inspect records in real-time.
+      </p>
+    </div>
+
+    <div class="header-kpis">
+      <div class="kpi-card">
+        <span class="kpi-num">{{ tablesList().length }}</span>
+        <span class="kpi-label">Active Tables</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-num">{{ totalSystemRecords() }}</span>
+        <span class="kpi-label">Total Live Records</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-num status-online">Connected</span>
+        <span class="kpi-label">MS SQL Server</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filter Pills -->
+  <div class="category-filter-bar">
+    <span class="filter-label">Categories:</span>
+    <div class="pills-track">
+      @for (cat of categories(); track cat) {
+        <button
+          class="cat-pill"
+          [class.active]="activeCategory() === cat"
+          (click)="setCategory(cat)">
+          {{ cat }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Main Layout: Left Tables Navigator + Right Table Grid -->
+  <div class="tables-layout">
+    <!-- Left Sidebar: Table Selector (18 Tables) -->
+    <aside class="tables-sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Select Table ({{ filteredTables().length }})</span>
+      </div>
+
+      <div class="tables-nav-list">
+        @for (tbl of filteredTables(); track tbl.id) {
+          <button
+            class="table-nav-item"
+            [class.active]="selectedTableId() === tbl.id"
+            (click)="selectTable(tbl)">
+            <div class="item-icon-box">
+              <span class="item-icon">{{ tbl.icon }}</span>
+            </div>
+            <div class="item-details">
+              <div class="item-name-row">
+                <span class="item-name">{{ tbl.displayName }}</span>
+                <span class="item-badge" [class.badge-empty]="tbl.rowCount === 0">
+                  {{ tbl.rowCount }}
+                </span>
+              </div>
+              <span class="item-code">[{{ tbl.name }}]</span>
+              <span class="item-cat-tag">{{ tbl.category }}</span>
+            </div>
+          </button>
+        }
+      </div>
+    </aside>
+
+    <!-- Right Workspace: Selected Table Data Grid -->
+    <section class="table-workspace">
+      @if (selectedTable(); as curTable) {
+        <!-- Selected Table Banner -->
+        <div class="workspace-header">
+          <div class="selected-meta">
+            <div class="selected-icon-badge">{{ curTable.icon }}</div>
+            <div>
+              <div class="title-row">
+                <h2 class="selected-title">{{ curTable.displayName }}</h2>
+                <span class="table-sys-name">dbo.{{ curTable.name }}</span>
+                <span class="table-cat-badge">{{ curTable.category }}</span>
+              </div>
+              <p class="selected-desc">{{ curTable.description }}</p>
+            </div>
+          </div>
+
+          <div class="workspace-actions">
+            <button class="btn-action-ghost" (click)="loadTableData()" title="Reload table data from database">
+              <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                <path d="M16 21h5v-5"/>
+              </svg>
+              <span>Refresh</span>
+            </button>
+
+            <button class="btn-action-export" (click)="exportCsv()" [disabled]="rows().length === 0" title="Export current rows to CSV">
+              <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Schema Columns Display -->
+        <div class="columns-strip">
+          <span class="strip-label">Table Schema:</span>
+          <div class="chips-container">
+            @for (col of curTable.columns; track col) {
+              <span class="col-chip">
+                <span class="chip-type-icon">#</span>
+                {{ col }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="grid-controls-bar">
+          <form class="search-form" (submit)="onSearchSubmit(); $event.preventDefault()">
+            <div class="search-input-wrapper">
+              <svg class="search-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input
+                type="text"
+                class="search-input"
+                [(ngModel)]="searchInput"
+                name="searchField"
+                placeholder="Search across {{ curTable.name }}..."
+              />
+              @if (searchInput) {
+                <button type="button" class="btn-clear-search" (click)="clearSearch()">✕</button>
+              }
+            </div>
+            <button type="submit" class="btn-search">Search</button>
+          </form>
+
+          <div class="total-badge-box">
+            <span>Showing <strong>{{ rows().length }}</strong> of <strong>{{ totalRows() }}</strong> records</span>
+          </div>
+        </div>
+
+        <!-- Error Notification -->
+        @if (errorMessage()) {
+          <div class="error-banner">
+            <span>⚠️ {{ errorMessage() }}</span>
+          </div>
+        }
+
+        <!-- Data Grid Table -->
+        <div class="table-responsive-wrapper">
+          @if (isLoading()) {
+            <div class="table-loading-overlay">
+              <div class="spinner"></div>
+              <span>Querying Microsoft SQL Server...</span>
+            </div>
+          }
+
+          <table class="enterprise-table">
+            <thead>
+              <tr>
+                <th class="col-index">#</th>
+                @for (col of curTable.columns; track col) {
+                  <th>{{ col }}</th>
+                }
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows(); track $index) {
+                <tr class="table-row">
+                  <td class="col-index">{{ (currentPage() - 1) * pageSize() + $index + 1 }}</td>
+                  @for (col of curTable.columns; track col) {
+                    <td>
+                      <!-- Status Pill -->
+                      @if (isStatusColumn(col)) {
+                        <span class="status-pill" [ngClass]="formatValue(getCellValue(row, col)).toLowerCase()">
+                          {{ formatValue(getCellValue(row, col)) }}
+                        </span>
+                      } @else if (isDateValue(getCellValue(row, col), col)) {
+                        <span class="date-cell" [title]="formatValue(getCellValue(row, col))">
+                          {{ getCellValue(row, col) | date:'short' }}
+                        </span>
+                      } @else {
+                        <span class="standard-cell" [title]="formatValue(getCellValue(row, col))">
+                          {{ formatValue(getCellValue(row, col)) }}
+                        </span>
+                      }
+                    </td>
+                  }
+                  <td class="col-actions">
+                    <button class="btn-inspect-row" (click)="inspectRow(row)" title="View full row record">
+                      <svg class="inspect-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                      <span>Details</span>
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                @if (!isLoading()) {
+                  <tr>
+                    <td [attr.colspan]="curTable.columns.length + 2" class="empty-state-cell">
+                      <div class="empty-box">
+                        <span class="empty-icon">📂</span>
+                        <h4>No records found in {{ curTable.name }}</h4>
+                        <p>Try clearing your search query or seeding data into this table.</p>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-footer">
+          <div class="pagination-info">
+            <span>Page <strong>{{ currentPage() }}</strong> of <strong>{{ totalPages() }}</strong></span>
+          </div>
+
+          <div class="pagination-nav">
+            <button
+              class="btn-page-nav"
+              [disabled]="currentPage() <= 1"
+              (click)="goToPage(1)"
+              title="First Page">
+              «
+            </button>
+            <button
+              class="btn-page-nav"
+              [disabled]="currentPage() <= 1"
+              (click)="goToPage(currentPage() - 1)"
+              title="Previous Page">
+              ‹ Prev
+            </button>
+            <button
+              class="btn-page-nav active">
+              {{ currentPage() }}
+            </button>
+            <button
+              class="btn-page-nav"
+              [disabled]="currentPage() >= totalPages()"
+              (click)="goToPage(currentPage() + 1)"
+              title="Next Page">
+              Next ›
+            </button>
+            <button
+              class="btn-page-nav"
+              [disabled]="currentPage() >= totalPages()"
+              (click)="goToPage(totalPages())"
+              title="Last Page">
+              »
+            </button>
+          </div>
+        </div>
+      }
+    </section>
+  </div>
+
+  <!-- Row Inspector Modal -->
+  @if (inspectModalOpen()) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="inspector-card" (click)="$event.stopPropagation()">
+        <div class="inspector-header">
+          <div class="header-info">
+            <span class="table-modal-badge">{{ selectedTable()?.name }} Record Inspector</span>
+            <h3>Row Details</h3>
+          </div>
+          <button class="btn-close-modal" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="inspector-body">
+          @if (inspectedRow(); as record) {
+            <div class="record-grid">
+              @for (key of selectedTable()?.columns; track key) {
+                <div class="record-kv-item">
+                  <span class="kv-key">{{ key }}</span>
+                  <span class="kv-value">{{ formatValue(record[key] ?? record[key.charAt(0).toLowerCase() + key.slice(1)]) }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="raw-json-box">
+              <span class="json-label">Raw JSON Payload:</span>
+              <pre><code>{{ inspectedRow() | json }}</code></pre>
+            </div>
+          }
+        </div>
+
+        <div class="inspector-footer">
+          <button class="btn-modal-close" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -254,6 +254,215 @@ public static class DbInitializer
                 await db.SaveChangesAsync();
                 logger.LogInformation("✓ Seeded CallRecordings into MS SQL Server");
             }
+
+            // 7. Ensure Teams
+            var teamSupportId = Guid.Parse("71111111-1111-1111-1111-111111111111");
+            var teamSalesId = Guid.Parse("72222222-2222-2222-2222-222222222222");
+            var teamVipId = Guid.Parse("73333333-3333-3333-3333-333333333333");
+            if (!await db.Teams.AnyAsync())
+            {
+                var supervisor = await db.Users.FirstOrDefaultAsync(u => u.Username == "supervisor");
+                db.Teams.AddRange(
+                    new Team { TeamId = teamSupportId, TeamName = "Technical Support Team", Description = "L1/L2 Technical Support & Fiber Troubleshooting", ManagerId = supervisor?.UserId, IsActive = true },
+                    new Team { TeamId = teamSalesId, TeamName = "Outbound Sales Team", Description = "Enterprise Connectivity & Package Upgrades", ManagerId = supervisor?.UserId, IsActive = true },
+                    new Team { TeamId = teamVipId, TeamName = "VIP Priority Team", Description = "Dedicated support for Corporate & Enterprise Accounts", ManagerId = supervisor?.UserId, IsActive = true }
+                );
+                await db.SaveChangesAsync();
+                logger.LogInformation("✓ Seeded Teams into MS SQL Server");
+
+                // Assign Agents to Teams & Set AgentCode
+                var agents = await db.Agents.ToListAsync();
+                for (int i = 0; i < agents.Count; i++)
+                {
+                    agents[i].TeamId = (i % 2 == 0) ? teamSupportId : teamSalesId;
+                    agents[i].AgentCode = $"AGT-{1000 + i + 1}";
+                }
+                await db.SaveChangesAsync();
+            }
+
+            // 8. Ensure Customers
+            var cust1Id = Guid.Parse("81111111-1111-1111-1111-111111111111");
+            if (!await db.Customers.AnyAsync())
+            {
+                db.Customers.AddRange(
+                    new Customer { CustomerId = cust1Id, Name = "Rahim Ahmed", Phone = "+880 1712 345678", Email = "rahim.ahmed@example.com", Address = "Gulshan-2, Dhaka", CRMId = "C-1001" },
+                    new Customer { CustomerId = Guid.Parse("82222222-2222-2222-2222-222222222222"), Name = "Karim Ullah", Phone = "+880 1819 876543", Email = "karim.ullah@example.com", Address = "Agrabad C/A, Chittagong", CRMId = "C-1002" },
+                    new Customer { CustomerId = Guid.Parse("83333333-3333-3333-3333-333333333333"), Name = "Nusrat Jahan", Phone = "01777498421", Email = "nusrat.jahan@example.com", Address = "Dhanmondi 27, Dhaka", CRMId = "C-1003" },
+                    new Customer { CustomerId = Guid.Parse("84444444-4444-4444-4444-444444444444"), Name = "Tanvir Rahman", Phone = "01819876543", Email = "tanvir.r@example.com", Address = "Sylhet Sadar, Sylhet", CRMId = "C-1004" },
+                    new Customer { CustomerId = Guid.Parse("85555555-5555-5555-5555-555555555555"), Name = "Farzana Yasmin", Phone = "01799887766", Email = "farzana.y@example.com", Address = "Uttara Sector 7, Dhaka", CRMId = "C-1005" }
+                );
+                await db.SaveChangesAsync();
+                logger.LogInformation("✓ Seeded Customers into MS SQL Server");
+
+                // Link existing calls to customers
+                var calls = await db.Calls.ToListAsync();
+                foreach (var c in calls)
+                {
+                    c.CustomerId = cust1Id;
+                }
+                await db.SaveChangesAsync();
+            }
+
+            // 9. Ensure SystemSettings
+            if (!await db.SystemSettings.AnyAsync())
+            {
+                db.SystemSettings.AddRange(
+                    new SystemSetting { SettingId = Guid.NewGuid(), SettingKey = "telephony.sip.provider", SettingValue = "BTCL SIP Trunk (Carrier Grade)", Description = "Primary Carrier Telephony Link" },
+                    new SystemSetting { SettingId = Guid.NewGuid(), SettingKey = "telephony.sip.server", SettingValue = "sip.btcl.com.bd:5060", Description = "SIP Gateway Host Address" },
+                    new SystemSetting { SettingId = Guid.NewGuid(), SettingKey = "routing.strategy.default", SettingValue = "LongestIdle", Description = "Default Dynamic ACD Distribution Strategy" },
+                    new SystemSetting { SettingId = Guid.NewGuid(), SettingKey = "routing.sla.threshold.seconds", SettingValue = "20", Description = "Service Level Agreement Answer Threshold (Seconds)" },
+                    new SystemSetting { SettingId = Guid.NewGuid(), SettingKey = "recordings.retention.days", SettingValue = "90", Description = "Audio Recording Retention Policy (Days)" },
+                    new SystemSetting { SettingId = Guid.NewGuid(), SettingKey = "qa.auto_eval.enabled", SettingValue = "true", Description = "Automated AI / Supervisor QA Evaluation Enabled" }
+                );
+                await db.SaveChangesAsync();
+                logger.LogInformation("✓ Seeded SystemSettings into MS SQL Server");
+            }
+
+            // 10. Ensure QAScorecards
+            if (!await db.QAScorecards.AnyAsync())
+            {
+                db.QAScorecards.Add(new QAScorecard
+                {
+                    ScorecardId = Guid.NewGuid(),
+                    Name = "General Customer Service Evaluation",
+                    PassThreshold = 80,
+                    IsActive = true,
+                    CriteriaJson = "[{\"criterion\":\"Greeting & Professionalism\",\"weight\":25},{\"criterion\":\"Problem Identification\",\"weight\":25},{\"criterion\":\"Resolution Accuracy\",\"weight\":30},{\"criterion\":\"Call Wrap-up & Courtesy\",\"weight\":20}]"
+                });
+                await db.SaveChangesAsync();
+                logger.LogInformation("✓ Seeded QAScorecards into MS SQL Server");
+            }
+
+            // 11. Ensure AuditLogs
+            if (!await db.AuditLogs.AnyAsync())
+            {
+                db.AuditLogs.Add(new AuditLog
+                {
+                    LogId = Guid.NewGuid(),
+                    Action = "SYSTEM_INITIALIZE",
+                    Entity = "Database",
+                    OldValue = null,
+                    NewValue = "Seeded 18 Enterprise ERD Tables",
+                    IPAddress = "127.0.0.1",
+                    CreatedAt = DateTimeOffset.UtcNow
+                });
+                await db.SaveChangesAsync();
+                logger.LogInformation("✓ Seeded initial AuditLogs into MS SQL Server");
+            }
+
+            // 12. Ensure UserRoles
+            if (!await db.UserRoles.AnyAsync())
+            {
+                var users = await db.Users.ToListAsync();
+                foreach (var user in users)
+                {
+                    db.UserRoles.Add(new UserRole
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = user.UserId,
+                        RoleId = user.RoleId,
+                        CreatedAt = DateTimeOffset.UtcNow
+                    });
+                }
+                await db.SaveChangesAsync();
+                logger.LogInformation("✓ Seeded UserRoles into MS SQL Server");
+            }
+
+            // 13. Ensure AgentStatusHistories & PerformanceMetrics
+            if (!await db.AgentStatusHistories.AnyAsync())
+            {
+                var agents = await db.Agents.ToListAsync();
+                foreach (var ag in agents)
+                {
+                    db.AgentStatusHistories.AddRange(
+                        new AgentStatusHistory { Id = Guid.NewGuid(), AgentId = ag.AgentId, Status = "Offline", StartTime = DateTimeOffset.UtcNow.AddHours(-4), EndTime = DateTimeOffset.UtcNow.AddHours(-2) },
+                        new AgentStatusHistory { Id = Guid.NewGuid(), AgentId = ag.AgentId, Status = "Available", StartTime = DateTimeOffset.UtcNow.AddHours(-2), EndTime = DateTimeOffset.UtcNow.AddMinutes(-10) },
+                        new AgentStatusHistory { Id = Guid.NewGuid(), AgentId = ag.AgentId, Status = ag.CurrentState.ToString(), StartTime = DateTimeOffset.UtcNow.AddMinutes(-10), EndTime = null }
+                    );
+
+                    db.PerformanceMetrics.Add(new PerformanceMetric
+                    {
+                        MetricId = Guid.NewGuid(),
+                        AgentId = ag.AgentId,
+                        Date = DateTime.UtcNow.Date,
+                        TotalCalls = 28,
+                        AnsweredCalls = 26,
+                        MissedCalls = 2,
+                        AvgTalkTime = 142,
+                        Occupancy = 84.50m
+                    });
+                }
+                await db.SaveChangesAsync();
+                logger.LogInformation("✓ Seeded AgentStatusHistories & PerformanceMetrics into MS SQL Server");
+            }
+
+            // 14. Ensure CallEvents
+            if (!await db.CallEvents.AnyAsync())
+            {
+                var sampleCalls = await db.Calls.Take(5).ToListAsync();
+                foreach (var call in sampleCalls)
+                {
+                    db.CallEvents.AddRange(
+                        new CallEvent { EventId = Guid.NewGuid(), CallId = call.CallId, EventType = "CALL_INITIATED", EventTime = call.InitiatedAt, Description = "SIP INVITE received from carrier trunk" },
+                        new CallEvent { EventId = Guid.NewGuid(), CallId = call.CallId, EventType = "CALL_RINGING", EventTime = call.InitiatedAt.AddSeconds(2), Description = "180 Ringing dispatched to agent extension" },
+                        new CallEvent { EventId = Guid.NewGuid(), CallId = call.CallId, EventType = "CALL_ANSWERED", EventTime = call.AnsweredAt ?? call.InitiatedAt.AddSeconds(5), Description = "200 OK 2-way RTP audio connected" },
+                        new CallEvent { EventId = Guid.NewGuid(), CallId = call.CallId, EventType = "CALL_ENDED", EventTime = call.EndedAt ?? call.InitiatedAt.AddSeconds(45), Description = "BYE session terminated" }
+                    );
+                }
+                await db.SaveChangesAsync();
+                logger.LogInformation("✓ Seeded CallEvents into MS SQL Server");
+            }
+
+            // 15. Ensure CRMActivities & CustomerCRMMappings
+            if (!await db.CRMActivities.AnyAsync())
+            {
+                var sampleCust = await db.Customers.FirstOrDefaultAsync();
+                var sampleCall = await db.Calls.FirstOrDefaultAsync();
+                if (sampleCust != null)
+                {
+                    db.CRMActivities.AddRange(
+                        new CRMActivity { ActivityId = Guid.NewGuid(), CustomerId = sampleCust.CustomerId, CallId = sampleCall?.CallId, ActivityType = "Inbound Call", Notes = "Customer reported intermittent connection loss in Gulshan-2 area. Line ping checked and escalated to field technician.", CreatedAt = DateTimeOffset.UtcNow.AddDays(-1) },
+                        new CRMActivity { ActivityId = Guid.NewGuid(), CustomerId = sampleCust.CustomerId, CallId = null, ActivityType = "Support Ticket", Notes = "Field team assigned ticket #TK-8491 for optical cable splicing.", CreatedAt = DateTimeOffset.UtcNow.AddHours(-6) }
+                    );
+
+                    db.CustomerCRMMappings.Add(new CustomerCRMMapping
+                    {
+                        MappingId = Guid.NewGuid(),
+                        CustomerId = sampleCust.CustomerId,
+                        CRMId = "SF-CRM-01",
+                        ExternalCustomerId = "SF-ACCT-984210",
+                        LastSyncAt = DateTimeOffset.UtcNow.AddHours(-1),
+                        IsActive = true
+                    });
+                    await db.SaveChangesAsync();
+                    logger.LogInformation("✓ Seeded CRMActivities & CustomerCRMMappings into MS SQL Server");
+                }
+            }
+
+            // 16. Ensure QAReviews
+            if (!await db.QAReviews.AnyAsync())
+            {
+                var sampleCall = await db.Calls.FirstOrDefaultAsync();
+                var sampleScorecard = await db.QAScorecards.FirstOrDefaultAsync();
+                var supervisor = await db.Users.FirstOrDefaultAsync(u => u.Username == "supervisor");
+                var agent = await db.Agents.FirstOrDefaultAsync();
+                if (sampleCall != null && sampleScorecard != null && agent != null)
+                {
+                    db.QAReviews.Add(new QAReview
+                    {
+                        ReviewId = Guid.NewGuid(),
+                        CallId = sampleCall.CallId,
+                        ScorecardId = sampleScorecard.ScorecardId,
+                        ReviewerId = supervisor != null ? supervisor.UserId : agent.UserId,
+                        AgentId = sampleCall.AgentId ?? agent.AgentId,
+                        Score = 92.50m,
+                        Feedback = "Excellent greeting, fast troubleshooting step execution, polite wrap-up.",
+                        CreatedAt = DateTimeOffset.UtcNow.AddHours(-3)
+                    });
+                    await db.SaveChangesAsync();
+                    logger.LogInformation("✓ Seeded QAReviews into MS SQL Server");
+                }
+            }
         }
         catch (Exception ex)
         {

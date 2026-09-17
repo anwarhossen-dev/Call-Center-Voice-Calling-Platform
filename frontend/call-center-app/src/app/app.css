@@ -10,18 +10,36 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
-/* Header */
+/* ==========================================================================
+   STICKY / FIXED TOP NAVIGATION (DOES NOT MOVE ON SCROLL)
+   ========================================================================== */
+.app-navbar-sticky {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15);
+}
+
+/* ==========================================================================
+   TOP GLOBAL HEADER - CLEAN MODERN TELECOM UI
+   ========================================================================== */
 .app-header {
-  background: #0f172a;
+  background: linear-gradient(180deg, #0f172a 0%, #0d1527 100%);
   color: #ffffff;
-  padding: 10px 24px;
+  padding: 0 24px;
+  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #1e293b;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-left {
@@ -32,107 +50,195 @@
 .brand-group {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
-.telecom-logo {
+/* Brand & Telecom Shield */
+.telecom-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s ease;
 }
 
-.logo-shield {
+.telecom-brand:hover {
+  opacity: 0.95;
+}
+
+.brand-icon-shield {
+  position: relative;
   width: 38px;
   height: 38px;
-  background: linear-gradient(135deg, #16a34a, #059669);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.4);
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
 }
 
-.logo-symbol {
-  font-size: 20px;
+.brand-svg-icon {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff;
 }
 
-.logo-text {
+.live-status-glow {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 9px;
+  height: 9px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid #0f172a;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.brand-copy {
   display: flex;
   flex-direction: column;
 }
 
-.brand-row {
+.brand-title-row {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .brand-btcl {
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
-  color: #22c55e;
-  letter-spacing: 0.5px;
+  color: #34d399;
+  letter-spacing: 0.6px;
 }
 
-.brand-tag {
+.brand-product {
   font-size: 15px;
   font-weight: 700;
-  color: #f8fafc;
+  color: #ffffff;
+  letter-spacing: -0.2px;
 }
 
-.brand-sub {
-  font-size: 10px;
+.brand-edition-badge {
+  font-size: 9px;
+  font-weight: 800;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.8px;
+  line-height: 1.2;
+}
+
+.brand-tagline {
+  font-size: 10.5px;
   color: #94a3b8;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
-.header-divider {
+.header-v-divider {
   width: 1px;
-  height: 28px;
-  background: #334155;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* Telemetry Ribbon */
-.telemetry-ribbon {
+/* Telemetry Cluster Capsule */
+.telemetry-cluster {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 4px 10px 4px 10px;
+  backdrop-filter: blur(8px);
 }
 
-.telemetry-pill {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid #334155;
-  border-radius: 6px;
-  padding: 4px 10px;
+.cluster-summary-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 6px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pulse-beacon {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: beacon-pulse 2s infinite ease-in-out;
+}
+
+@keyframes beacon-pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px #10b981; }
+}
+
+.cluster-title {
   font-size: 11px;
+  font-weight: 600;
+  color: #cbd5e1;
+  white-space: nowrap;
+}
+
+.telemetry-chips {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.pill-label {
-  color: #94a3b8;
+.telemetry-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(71, 85, 105, 0.4);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  white-space: nowrap;
+  transition: all 0.15s ease;
 }
 
-.pill-val {
+.telemetry-chip:hover {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+.chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 4px #10b981;
+}
+
+.chip-name {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.chip-state {
   color: #f1f5f9;
   font-weight: 600;
 }
 
-.status-pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px #22c55e;
-  animation: pulse-ring 2s infinite;
+.chip-state.online {
+  color: #34d399;
 }
 
-@keyframes pulse-ring {
-  0% { transform: scale(0.9); opacity: 0.8; }
-  50% { transform: scale(1.3); opacity: 1; }
-  100% { transform: scale(0.9); opacity: 0.8; }
+.chip-val {
+  color: #f8fafc;
+  font-weight: 600;
 }
 
 /* Header Right */
@@ -142,297 +248,537 @@
   gap: 14px;
 }
 
-.btn-info-toggle, .btn-test-inbound {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid #475569;
-  color: #e2e8f0;
-  border-radius: 6px;
-  padding: 6px 12px;
+.header-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-action-ghost {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 7px 12px;
   font-size: 12px;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-info-toggle:hover {
-  background: #334155;
-  border-color: #64748b;
+.btn-action-ghost .action-icon {
+  width: 15px;
+  height: 15px;
+  stroke: #94a3b8;
+  transition: stroke 0.2s;
 }
 
-.btn-test-inbound {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.4));
-  border-color: #3b82f6;
-  color: #60a5fa;
+.btn-action-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
 }
 
-.btn-test-inbound:hover {
-  background: #2563eb;
-  color: white;
+.btn-action-ghost:hover .action-icon {
+  stroke: #ffffff;
 }
 
-.agent-profile-box {
+.btn-action-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border: 1px solid #3b82f6;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-action-primary .action-icon {
+  width: 15px;
+  height: 15px;
+  stroke: #ffffff;
+}
+
+.btn-action-primary:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-action-primary:active {
+  transform: translateY(0);
+}
+
+.btn-action-primary:hover .call-pulse-icon {
+  animation: phone-wiggle 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes phone-wiggle {
+  0% { transform: rotate(-8deg); }
+  100% { transform: rotate(8deg); }
+}
+
+/* Agent Controls & Presence */
+.agent-control-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.smart-status-capsule {
   display: flex;
   align-items: center;
   gap: 8px;
+  border-radius: 20px;
+  padding: 5px 12px;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid #334155;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
-.agent-avatar-badge {
+.smart-status-capsule.Available {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.smart-status-capsule.OnCall {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.smart-status-capsule.Break {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.smart-status-capsule.WrapUp {
+  border-color: #a855f7;
+  background: rgba(168, 85, 247, 0.12);
+}
+
+.smart-status-capsule.Offline {
+  border-color: #64748b;
+  background: rgba(100, 116, 139, 0.12);
+}
+
+.status-indicator {
   position: relative;
-  width: 34px;
-  height: 34px;
-  background: #1e293b;
-  border: 1px solid #475569;
-  border-radius: 50%;
+  width: 10px;
+  height: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
 }
 
-.agent-ext-tag {
-  position: absolute;
-  bottom: -4px;
-  right: -4px;
-  background: #2563eb;
-  color: white;
-  font-size: 8px;
-  font-weight: 700;
-  padding: 1px 3px;
-  border-radius: 4px;
-}
-
-.agent-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.agent-name {
-  font-size: 12px;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-.agent-role {
-  font-size: 10px;
-  color: #94a3b8;
-}
-
-/* Status Selector Box */
-.status-selector-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 8px;
-  padding: 5px 10px;
-  border: 1px solid #334155;
-  background: #1e293b;
-  transition: all 0.2s;
-}
-
-.status-selector-box.Available { border-color: #22c55e; background: rgba(34, 197, 94, 0.1); }
-.status-selector-box.OnCall { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
-.status-selector-box.Break { border-color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
-.status-selector-box.WrapUp { border-color: #a855f7; background: rgba(168, 85, 247, 0.1); }
-.status-selector-box.Offline { border-color: #64748b; background: rgba(100, 116, 139, 0.1); }
-
-.status-dot {
-  width: 9px;
-  height: 9px;
+.status-core-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  background: #64748b;
+  position: relative;
+  z-index: 2;
 }
 
-.status-selector-box.Available .status-dot { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
-.status-selector-box.OnCall .status-dot { background: #3b82f6; box-shadow: 0 0 6px #3b82f6; }
-.status-selector-box.Break .status-dot { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
-.status-selector-box.WrapUp .status-dot { background: #a855f7; box-shadow: 0 0 6px #a855f7; }
-.status-selector-box.Offline .status-dot { background: #64748b; }
+.smart-status-capsule.Available .status-core-dot { background: #10b981; }
+.smart-status-capsule.OnCall .status-core-dot { background: #3b82f6; }
+.smart-status-capsule.Break .status-core-dot { background: #f59e0b; }
+.smart-status-capsule.WrapUp .status-core-dot { background: #a855f7; }
 
-.status-select {
+.status-glow-ring {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: pulse-ring 2s infinite ease-in-out;
+}
+
+.smart-status-capsule.Available .status-glow-ring { background: #10b981; }
+.smart-status-capsule.OnCall .status-glow-ring { background: #3b82f6; }
+.smart-status-capsule.Break .status-glow-ring { background: #f59e0b; }
+.smart-status-capsule.WrapUp .status-glow-ring { background: #a855f7; }
+
+.status-native-select {
   border: none;
-  background: none;
+  background: transparent;
   font-size: 12px;
   font-weight: 700;
   color: #f8fafc;
   outline: none;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2px;
 }
 
-.status-select option {
-  background: #1e293b;
+.status-native-select option {
+  background: #0f172a;
   color: #ffffff;
 }
 
-.btn-logout {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+.select-chevron {
+  width: 14px;
+  height: 14px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+/* User Profile Badge */
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 3px 8px 3px 4px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.avatar-ring {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-ring.supervisor {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+.avatar-ring.admin {
+  background: linear-gradient(135deg, #0d9488, #0891b2);
+}
+
+.avatar-ring.agent {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.avatar-initials {
+  letter-spacing: 0.5px;
+}
+
+.ext-bubble {
+  position: absolute;
+  bottom: -4px;
+  right: -5px;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 8.5px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 10px;
+  border: 1.5px solid #0f172a;
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-display-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.2;
+}
+
+.user-role-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* Logout Button */
+.btn-smart-logout {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   color: #fca5a5;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 11px;
+  border-radius: 8px;
+  padding: 7px 11px;
+  font-size: 11.5px;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.btn-logout:hover {
+.logout-icon {
+  width: 14px;
+  height: 14px;
+  stroke: #fca5a5;
+  transition: stroke 0.2s;
+}
+
+.btn-smart-logout:hover {
   background: #ef4444;
   color: #ffffff;
+  border-color: #ef4444;
 }
 
+.btn-smart-logout:hover .logout-icon {
+  stroke: #ffffff;
+}
+
+/* Auth Header */
 .auth-header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .btn-login-nav, .btn-register-nav {
   text-decoration: none;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+}
+
+.auth-icon {
+  width: 14px;
+  height: 14px;
 }
 
 .btn-login-nav {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: #f8fafc;
 }
 
 .btn-login-nav:hover {
-  background: #334155;
-  border-color: #0d9488;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #38bdf8;
 }
 
 .btn-register-nav {
-  background: linear-gradient(135deg, #0d9488, #0284c7);
+  background: linear-gradient(135deg, #10b981, #059669);
   color: #ffffff;
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .btn-register-nav:hover {
   filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
-/* Nav Bar */
+/* ==========================================================================
+   NAVIGATION BAR (TABS) - CLEAN ENTERPRISE SAAS DESIGN
+   ========================================================================== */
 .portal-nav-bar {
   background: #ffffff;
   border-bottom: 1px solid #e2e8f0;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  width: 100%;
 }
 
 .nav-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 20px;
+  height: 48px;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .tabs-group {
   display: flex;
+  align-items: center;
   gap: 6px;
+  flex-wrap: nowrap;
 }
 
 .nav-tab {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 18px;
-  background: none;
-  border: none;
-  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
   font-weight: 600;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
+  border: 1px solid transparent;
 }
 
-.tab-badge.recordings-badge {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
+.nav-tab .tab-svg {
+  width: 15px;
+  height: 15px;
+  color: #64748b;
+  transition: color 0.15s ease, transform 0.15s ease;
 }
 
 .nav-tab:hover {
   color: #0f172a;
   background: #f8fafc;
+  border-color: #f1f5f9;
+}
+
+.nav-tab:hover .tab-svg {
+  color: #1e293b;
+  transform: scale(1.05);
 }
 
 .nav-tab.active {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #bfdbfe;
   font-weight: 700;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
 }
 
-.tab-icon {
-  font-size: 16px;
+.nav-tab.active .tab-svg {
+  color: #2563eb;
 }
 
 .tab-badge {
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.3;
+}
+
+.tab-badge.counter {
   background: #f1f5f9;
-  color: #64748b;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.nav-tab.active .tab-badge.counter {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+.tab-badge.recordings-badge {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.nav-tab.active .tab-badge.recordings-badge {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
 }
 
 .tab-badge.live {
   background: #dcfce7;
   color: #15803d;
-  animation: pulse 1.5s infinite;
+  border: 1px solid #86efac;
 }
 
 .tab-badge.ringing {
   background: #fef3c7;
   color: #b45309;
+  border: 1px solid #fde68a;
 }
 
 .tab-badge.coaching {
-  background: #ede9fe;
-  color: #6d28d9;
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #d8b4fe;
 }
 
+.badge-pulse-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: badge-pulse 1.4s infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.4); opacity: 1; }
+}
+
+/* Nav Right Metadata */
 .nav-right-meta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #64748b;
 }
 
-.tech-tag {
+.telecom-engine-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-weight: 500;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
 }
 
-.tech-sep {
+.badge-dot-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  animation: pulse-ring 2s infinite;
+}
+
+.engine-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.engine-sep {
   color: #cbd5e1;
+}
+
+.engine-sub {
+  color: #64748b;
+  font-weight: 500;
 }
 
 /* Main Body */
 .main-body {
   padding: 20px 24px;
   flex: 1;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .portal-content-area {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Modal */
@@ -599,3 +945,93 @@
 .font-bold { font-weight: 700; }
 .mt-4 { margin-top: 16px; }
 .mb-2 { margin-bottom: 8px; }
+
+/* ==========================================================================
+   GLOBAL APP RESPONSIVENESS (MOBILE & TABLET)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 12px;
+    height: 54px;
+  }
+
+  .brand-icon-shield {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-svg-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .brand-btcl {
+    font-size: 15px;
+  }
+
+  .brand-product {
+    font-size: 13px;
+  }
+
+  .agent-control-wrapper {
+    gap: 8px;
+  }
+
+  .user-meta {
+    display: none; /* Keep clean and compact on small phones */
+  }
+
+  .smart-status-capsule {
+    padding: 3px 6px;
+  }
+
+  .status-native-select {
+    font-size: 11px;
+    max-width: 80px;
+  }
+
+  .avatar-ring {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  .btn-smart-logout {
+    padding: 5px 8px;
+  }
+
+  .logout-text {
+    display: none;
+  }
+
+  .portal-nav-bar {
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .nav-container {
+    padding: 0 8px;
+    height: 42px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-tab {
+    padding: 5px 8px;
+    font-size: 11px;
+    gap: 5px;
+  }
+
+  .nav-tab .tab-svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .main-body {
+    padding: 10px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-product {
+    display: none;
+  }
+}

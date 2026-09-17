@@ -15,3 +15,4 @@ D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCente
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\refint\CallCenter.Telephony.FreeSwitch.dll
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.pdb
 d:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\ref\CallCenter.Telephony.FreeSwitch.dll
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Infrastructure\CallCenter.Telephony.FreeSwitch\obj\Debug\net8.0\CallCenter.Telephony.FreeSwitch.sourcelink.json
