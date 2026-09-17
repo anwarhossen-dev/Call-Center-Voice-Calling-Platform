@@ -1,7 +1,8 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 export interface TableSummary {
   id: string;
@@ -22,6 +23,7 @@ export interface TableSummary {
   styleUrl: './tables-portal.component.css'
 })
 export class TablesPortalComponent implements OnInit {
+  auth = inject(AuthService);
   tablesList = signal<TableSummary[]>([]);
   activeCategory = signal<string>('All');
   selectedTableId = signal<string>('users');
@@ -77,9 +79,21 @@ export class TablesPortalComponent implements OnInit {
 
   loadTablesSummary() {
     this.isLoading.set(true);
-    fetch('http://localhost:5000/api/v1/tables')
+    this.errorMessage.set('');
+
+    const headers: Record<string, string> = {
+      'X-User-Role': this.auth.userRole()
+    };
+    if (this.auth.currentUser()?.token) {
+      headers['Authorization'] = `Bearer ${this.auth.currentUser()?.token}`;
+    }
+
+    fetch('http://localhost:5000/api/v1/tables', { headers })
       .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch tables list');
+        if (!res.ok) {
+          if (res.status === 403) throw new Error('Access Denied: Only Admin users can view database tables.');
+          throw new Error('Failed to fetch tables list');
+        }
         return res.json();
       })
       .then(data => {
@@ -121,9 +135,19 @@ export class TablesPortalComponent implements OnInit {
     const size = this.pageSize();
     const search = encodeURIComponent(this.searchQuery());
 
-    fetch(`http://localhost:5000/api/v1/tables/${tableId}?page=${page}&pageSize=${size}&search=${search}`)
+    const headers: Record<string, string> = {
+      'X-User-Role': this.auth.userRole()
+    };
+    if (this.auth.currentUser()?.token) {
+      headers['Authorization'] = `Bearer ${this.auth.currentUser()?.token}`;
+    }
+
+    fetch(`http://localhost:5000/api/v1/tables/${tableId}?page=${page}&pageSize=${size}&search=${search}`, { headers })
       .then(res => {
-        if (!res.ok) throw new Error(`Failed to load data for table '${tableId}'`);
+        if (!res.ok) {
+          if (res.status === 403) throw new Error('Access Denied: Only Admin users can view table records.');
+          throw new Error(`Failed to load data for table '${tableId}'`);
+        }
         return res.json();
       })
       .then(data => {

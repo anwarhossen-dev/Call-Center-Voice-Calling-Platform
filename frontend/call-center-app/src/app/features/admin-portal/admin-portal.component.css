@@ -484,3 +484,57 @@
   font-weight: 600;
   border: 1px solid #bbf7d0;
 }
+
+/* ==========================================================================
+   ADMIN PORTAL RESPONSIVENESS (MOBILE & TABLET)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .admin-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .admin-sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px;
+  }
+
+  .sidebar-title {
+    display: none;
+  }
+
+  .nav-item {
+    width: auto;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-content {
+    padding: 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .content-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .content-header button {
+    width: 100%;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .flex-end-row {
+    grid-column: span 1;
+  }
+}

@@ -159,3 +159,4 @@ D:\Anwar\Call Center Voice Calling Platform\backend\src\Presentation\CallCenter.
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Presentation\CallCenter.WebApi\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Presentation\CallCenter.WebApi\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\Anwar\Call Center Voice Calling Platform\backend\src\Presentation\CallCenter.WebApi\obj\Debug\net8.0\CallCenter.WebApi.sourcelink.json
+D:\Anwar\Call Center Voice Calling Platform\backend\src\Presentation\CallCenter.WebApi\bin\Debug\net8.0\CallCenter.WebApi.staticwebassets.runtime.json

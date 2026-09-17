@@ -45,13 +45,8 @@ export class LoginPageComponent {
     if (result.success && result.user) {
       this.successMessage.set(`Welcome back, ${result.user.displayName}! Redirecting...`);
       setTimeout(() => {
-        if (result.user?.role === 'Admin') {
-          this.router.navigate(['/admin']);
-        } else if (result.user?.role === 'Supervisor') {
-          this.router.navigate(['/supervisor']);
-        } else {
-          this.router.navigate(['/agent']);
-        }
+        const targetRoute = this.auth.getDefaultRouteForRole(result.user?.role);
+        this.router.navigate([targetRoute]);
       }, 700);
     } else {
       this.errorMessage.set(result.message || 'Login failed.');

@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TelephonyService, CallHistoryItem } from '../../core/services/telephony.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
 })
 export class HistoryPageComponent implements OnInit {
   telephony = inject(TelephonyService);
+  auth = inject(AuthService);
   router = inject(Router);
 
   searchQuery = signal<string>('');

@@ -72,7 +72,7 @@
               "RelativeDocumentMoniker": "frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts",
               "ToolTip": "D:\\Anwar\\Call Center Voice Calling Platform\\frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts",
               "RelativeToolTip": "frontend\\call-center-app\\src\\app\\features\\agent-portal\\agent-portal.component.ts",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAAACgAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
               "WhenOpened": "2026-09-16T04:04:40.653Z",
               "EditorCaption": ""
@@ -147,8 +147,7 @@
               "RelativeToolTip": "backend\\src\\Presentation\\CallCenter.WebApi\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-09-15T17:22:37.531Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-15T17:22:37.531Z"
             },
             {
               "$type": "Document",

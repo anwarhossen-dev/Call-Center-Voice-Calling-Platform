@@ -5,7 +5,11 @@
       <div class="header-icon-box">📞</div>
       <div>
         <h1 class="page-title">Call History &amp; Logs</h1>
-        <p class="page-subtitle">Real-time interaction history synchronized directly with <strong>Microsoft SQL Server (CallCenterDb)</strong></p>
+        @if (auth.isAgent()) {
+          <p class="page-subtitle">Personal agent call logs &amp; interactions for <strong>{{ auth.userDisplayName() }}</strong> (Ext: #{{ auth.userExtension() || '1001' }})</p>
+        } @else {
+          <p class="page-subtitle">Real-time interaction history &amp; CDR records synchronized with <strong>Microsoft SQL Server (CallCenterDb)</strong></p>
+        }
       </div>
     </div>
     <div class="header-actions">

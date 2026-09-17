@@ -378,3 +378,67 @@
   color: #0f172a;
   padding: 0 4px;
 }
+
+/* ==========================================================================
+   CALL RECORDINGS RESPONSIVENESS (MOBILE & TABLET)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .recordings-page-layout {
+    gap: 14px;
+  }
+
+  .page-top-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .main-page-title {
+    font-size: 18px;
+  }
+
+  .header-stats-chips {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .stat-chip {
+    padding: 8px 10px;
+  }
+
+  .stat-num {
+    font-size: 16px;
+  }
+
+  .active-player-dock {
+    padding: 14px;
+  }
+
+  .dock-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .dock-controls-row {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .recordings-table-wrapper {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .recordings-table th, .recordings-table td {
+    padding: 10px 12px;
+    white-space: nowrap;
+  }
+
+  .pagination-bar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+}

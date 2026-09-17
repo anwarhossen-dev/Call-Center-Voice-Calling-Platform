@@ -25,6 +25,30 @@ export class AuthService {
   public userDisplayName = computed(() => this.currentUser()?.displayName || this.currentUser()?.username || 'Guest');
   public userExtension = computed(() => this.currentUser()?.extension || '');
 
+  // Role Checks
+  public isAdmin = computed(() => this.userRole().toLowerCase() === 'admin');
+  public isSupervisor = computed(() => this.userRole().toLowerCase() === 'supervisor');
+  public isAgent = computed(() => this.userRole().toLowerCase() === 'agent');
+
+  /**
+   * Check if current user has any of the permitted roles (case-insensitive)
+   */
+  public canAccess(allowedRoles: string[]): boolean {
+    if (!this.isLoggedIn()) return false;
+    const current = this.userRole().toLowerCase();
+    return allowedRoles.some(r => r.toLowerCase() === current);
+  }
+
+  /**
+   * Get default home route based on role
+   */
+  public getDefaultRouteForRole(role?: string): string {
+    const r = (role || this.userRole()).toLowerCase();
+    if (r === 'admin') return '/admin';
+    if (r === 'supervisor') return '/supervisor';
+    return '/agent';
+  }
+
   constructor(private router: Router) {
     this.restoreSession();
   }

@@ -21,12 +21,30 @@ public class DataTablesController : ControllerBase
         _logger = logger;
     }
 
+    private bool IsAuthorizedAdmin()
+    {
+        if (Request.Headers.TryGetValue("X-User-Role", out var roleVal))
+        {
+            var role = roleVal.ToString().Trim();
+            if (!string.IsNullOrEmpty(role) && !string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /// <summary>
     /// Returns all 18 enterprise database tables with metadata and live row counts
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetTablesSummary()
     {
+        if (!IsAuthorizedAdmin())
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Access Denied: Only users with the Admin role can access Database Tables." });
+        }
+
         var tables = new List<object>
         {
             // Category: Users & Security
@@ -262,6 +280,11 @@ public class DataTablesController : ControllerBase
     [HttpGet("{tableName}")]
     public async Task<IActionResult> GetTableData(string tableName, [FromQuery] int page = 1, [FromQuery] int pageSize = 15, [FromQuery] string? search = null)
     {
+        if (!IsAuthorizedAdmin())
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Access Denied: Only users with the Admin role can view table records." });
+        }
+
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 15;
         if (pageSize > 100) pageSize = 100;

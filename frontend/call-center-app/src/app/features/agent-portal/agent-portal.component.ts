@@ -37,7 +37,8 @@ export class AgentPortalComponent {
     { val: 'Callback', label: '📞 Callback Needed' },
     { val: 'Escalated', label: '↗ Escalated Tier 2' },
     { val: 'Interested', label: '★ Sales: Interested' },
-    { val: 'NotInterested', label: '✕ Not Interested' }
+    { val: 'NotInterested', label: '✕ Not Interested' },
+    { val: 'COMPLETED', label: 'COMPLETED' }
   ];
 
   keypadKeys = [

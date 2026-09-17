@@ -20,56 +20,50 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ==========================================================================
-   MODERN SLEEK CUSTOM SCROLLBAR (Fixes Windows default wide ugly scrollbars)
-   ========================================================================== */
+/* Light Mode Scrollbars */
 ::-webkit-scrollbar {
   width: 7px;
   height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #e2e8f0;
+  background: #f1f5f9;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #94a3b8;
 }
 
 /* Firefox scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #94a3b8 #e2e8f0;
+  scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
-/* Dark Theme & Table Containers Custom Scrollbar */
-.dark-scroll::-webkit-scrollbar-track,
 .table-responsive-wrapper::-webkit-scrollbar-track,
 .tables-nav-list::-webkit-scrollbar-track,
 .oled-input-display::-webkit-scrollbar-track,
 .pills-track::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #f8fafc;
 }
 
-.dark-scroll::-webkit-scrollbar-thumb,
 .table-responsive-wrapper::-webkit-scrollbar-thumb,
 .tables-nav-list::-webkit-scrollbar-thumb,
 .oled-input-display::-webkit-scrollbar-thumb,
 .pills-track::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
-.dark-scroll::-webkit-scrollbar-thumb:hover,
 .table-responsive-wrapper::-webkit-scrollbar-thumb:hover,
 .tables-nav-list::-webkit-scrollbar-thumb:hover,
 .oled-input-display::-webkit-scrollbar-thumb:hover,
 .pills-track::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94a3b8;
 }
